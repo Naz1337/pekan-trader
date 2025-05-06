@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>File Drop Upload</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background-color: #f0f4f8; /* Light background */
+        }
+        /* Custom class for glow effect */
+        .glow {
+            box-shadow: 0 0 15px rgba(66, 153, 225, 0.5); /* Blue glow */
+            border-color: #4299e1; /* Blue border */
+        }
+        /* Hide the file input visually but keep it accessible */
+        .file-input {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mx-auto p-4">
+    <div id="drop-zone" class="border-4 border-dashed border-gray-300 rounded-lg p-8 text-center cursor-pointer hover:border-blue-500 transition-colors duration-200 ease-in-out w-full max-w-md mx-auto bg-white shadow-md">
+        <input type="file" id="hidden-file-input" class="file-input" multiple>
+        <p class="text-gray-600 mb-2">Drag and drop files here, or click to select files</p>
+        <svg class="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+        </svg>
+        <div id="upload-progress" class="mt-4 w-full bg-gray-200 rounded-full h-2.5 hidden">
+            <div id="progress-bar" class="bg-blue-600 h-2.5 rounded-full" style="width: 0%"></div>
+        </div>
+        <p id="upload-status" class="mt-2 text-sm text-gray-600 hidden"></p>
+        <div id="uploaded-link" class="mt-4 text-sm text-green-600 hidden">
+            Uploaded Link: <a href="#" target="_blank" class="text-blue-500 hover:underline"></a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const dropZone = document.getElementById('drop-zone');
+    const hiddenFileInput = document.getElementById('hidden-file-input');
+    const uploadProgressContainer = document.getElementById('upload-progress');
+    const progressBar = document.getElementById('progress-bar');
+    const uploadStatus = document.getElementById('upload-status');
+    const uploadedLinkDiv = document.getElementById('uploaded-link');
+    const uploadedLinkAnchor = uploadedLinkDiv.querySelector('a');
+
+    // Prevent default drag behaviors
+    ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, preventDefaults, false);
+        document.body.addEventListener(eventName, preventDefaults, false); // Prevent default on body as well
+    });
+
+    function preventDefaults(e) {
+        e.preventDefault();
+        e.stopPropagation();
+    }
+
+    // Highlight drop zone when item is dragged over
+    ['dragenter', 'dragover'].forEach(eventName => {
+        dropZone.addEventListener(eventName, highlight, false);
+    });
+
+    ['dragleave', 'drop'].forEach(eventName => {
+        dropZone.addEventListener(eventName, unhighlight, false);
+    });
+
+    function highlight(e) {
+        dropZone.classList.add('glow');
+        dropZone.classList.add('border-blue-500');
+        dropZone.classList.remove('border-gray-300');
+    }
+
+    function unhighlight(e) {
+        dropZone.classList.remove('glow');
+        dropZone.classList.remove('border-blue-500');
+        dropZone.classList.add('border-gray-300');
+    }
+
+    // Handle dropped files
+    dropZone.addEventListener('drop', handleDrop, false);
+
+    function handleDrop(e) {
+        const dt = e.dataTransfer;
+        const files = dt.files;
+
+        handleFiles(files);
+    }
+
+    // Handle file selection via click
+    dropZone.addEventListener('click', () => {
+        hiddenFileInput.click();
+    });
+
+    hiddenFileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        handleFiles(files);
+    });
+
+
+    function handleFiles(files) {
+        // Process each file (you can modify this to handle multiple files)
+        if (files.length > 0) {
+            const file = files[0]; // Assuming only one file for simplicity
+            uploadFile(file);
+        }
+    }
+
+    function uploadFile(file) {
+        const url = 'YOUR_UPLOAD_URL_HERE'; // *** Replace with your actual upload URL ***
+        const xhr = new XMLHttpRequest();
+        const formData = new FormData();
+
+        // Show progress bar and status
+        uploadProgressContainer.classList.remove('hidden');
+        uploadStatus.classList.remove('hidden');
+        uploadStatus.textContent = `Uploading: ${file.name}`;
+        uploadedLinkDiv.classList.add('hidden'); // Hide previous link
+
+        // XMLHttpRequest event listeners
+        xhr.upload.addEventListener('progress', function(e) {
+            if (e.lengthComputable) {
+                const percentComplete = (e.loaded / e.total) * 100;
+                progressBar.style.width = percentComplete + '%';
+                uploadStatus.textContent = `Uploading: ${file.name} (${Math.round(percentComplete)}%)`;
+            }
+        }, false);
+
+        xhr.addEventListener('load', function() {
+            // Upload complete
+            uploadStatus.textContent = `Upload complete for ${file.name}`;
+            progressBar.style.width = '100%'; // Ensure progress bar is full
+
+            // Handle the response from the server
+            try {
+                const response = JSON.parse(xhr.responseText);
+                if (response && response.link) { // Assuming the server responds with a JSON object containing a 'link' property
+                    uploadedLinkAnchor.href = response.link;
+                    uploadedLinkAnchor.textContent = response.link;
+                    uploadedLinkDiv.classList.remove('hidden');
+                } else {
+                    uploadStatus.textContent = `Upload complete for ${file.name}, but no link received. Server response: ${xhr.responseText}`;
+                }
+            } catch (e) {
+                uploadStatus.textContent = `Upload complete for ${file.name}, but failed to parse server response. Server response: ${xhr.responseText}`;
+                console.error("Error parsing server response:", e);
+            }
+
+            // Optionally hide progress bar after a delay
+            setTimeout(() => {
+                uploadProgressContainer.classList.add('hidden');
+                // uploadStatus.classList.add('hidden'); // Keep status visible or hide based on preference
+            }, 2000);
+
+        }, false);
+
+        xhr.addEventListener('error', function() {
+            uploadStatus.textContent = `Upload failed for ${file.name}`;
+            uploadProgressContainer.classList.add('hidden');
+        }, false);
+
+        xhr.addEventListener('abort', function() {
+            uploadStatus.textContent = `Upload aborted for ${file.name}`;
+            uploadProgressContainer.classList.add('hidden');
+        }, false);
+
+        // Open and send the request
+        xhr.open('POST', url);
+        formData.append('file', file); // 'file' is the key the server expects for the file data
+        xhr.send(formData);
+    }
+
+</script>
+
+</body>
+</html>
