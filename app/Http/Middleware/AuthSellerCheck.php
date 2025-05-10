@@ -15,7 +15,7 @@ class AuthSellerCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (! auth()->user()->seller) {
+        if (! auth()->user()->seller()->exists()) {
             return redirect()->route('home');
         }
         return $next($request);

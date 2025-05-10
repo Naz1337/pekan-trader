@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CatalogueController;
 
 Route::middleware('guest')->group(function () {
     Route::controller(AuthController::class)->group(function () {
@@ -27,10 +28,10 @@ Route::middleware('guest')->group(function () {
 
 // guard for normal users
 Route::middleware('auth')->group(function () {
-    Route::get('/', function () {
-        return view('welcome',
-            ['user' => auth()->user()]);
-    })->name('home');
+//    Route::get('/', function () {
+//        return view('welcome',
+//            ['user' => auth()->user()]);
+//    })->name('home');
 
     Route::post('/logout', function () {
         auth()->logout();
@@ -38,3 +39,13 @@ Route::middleware('auth')->group(function () {
         return redirect()->route('login');
     })->name('logout');
 });
+
+Route::middleware('auth.seller')->group(function () {
+    Route::prefix('seller')->group(function () {
+        Route::get('/dashboard', function () {
+            return view('seller.dashboard');
+        });
+    });
+});
+
+Route::get('/', [CatalogueController::class, 'home'])->name('home');

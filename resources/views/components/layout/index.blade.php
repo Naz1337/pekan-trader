@@ -14,9 +14,7 @@
 </head>
 <body>
     <div style="display: contents;">
-        <div class="w-full px-6">
-            {{ $slot }}
-        </div>
+        {{ $slot }}
     </div>
 </body>
 </html>
