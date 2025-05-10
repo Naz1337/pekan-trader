@@ -21,13 +21,13 @@ class AuthController extends Controller
         // Validate the request
         $validated = $request->validate([
             'email' => 'required|string',
-            'password' => 'required|string|min:8',
+            'password' => 'required|string',
         ]);
 
         // Attempt to log the user in
         if (auth()->attempt($validated)) {
             // Redirect to the intended page
-            return response()->view('welcome', ['user_name' => auth()->user()])
+            return response()->view('welcome', ['user' => auth()->user()])
                 ->header('HX-Redirect', route('home'));
         }
 
@@ -132,10 +132,10 @@ class AuthController extends Controller
         ]);
 
         // Handle file uploads
-        $logoPath = $seller_data['logo']->store('logos', 'public');
-        $certPath = $seller_data['business_cert']->store('business_certs', 'public');
-        $seller_data['logo_url'] = $logoPath;
-        $seller_data['business_cert_url'] = $certPath;
+        $logo_path = $seller_data['logo']->store('logos', 'public');
+        $cert_path = $seller_data['business_cert']->store('business_certs', 'public');
+        $seller_data['logo_url'] = $logo_path;
+        $seller_data['business_cert_url'] = $cert_path;
 
         // Create the seller
         $new_user->seller()->create([
@@ -144,13 +144,13 @@ class AuthController extends Controller
             "business_address" => $seller_data['business_address'],
             "business_phone" => $seller_data['business_phone'],
             "business_email" => $seller_data['business_email'],
-            "logo_url" => $logoPath,
+            "logo_url" => $logo_path,
             "opening_hour" => $seller_data['opening_hour'],
             "closing_hour" => $seller_data['closing_hour'],
             "facebook" => $seller_data['facebook'],
             "instagram" => $seller_data['instagram'],
             "ic_number" => $seller_data['ic_number'],
-            "business_cert_url" => $certPath,
+            "business_cert_url" => $cert_path,
             "bank_name" => $seller_data['bank_name'],
             "bank_account_name" => $seller_data['bank_account_name'],
             "bank_account_number" => $seller_data['bank_account_number']
