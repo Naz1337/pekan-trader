@@ -1,7 +1,7 @@
 @props([
     'is_logged_in' => auth()->check(),
     'user' => auth()->check() ? request()->user() : null,
-    'is_user_a_seller' => request()->user()->seller()->exists()
+    'is_user_a_seller' => request()->user()?->seller()->exists() ?? false
 ])
 
 <x-layout>
