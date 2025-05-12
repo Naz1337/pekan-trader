@@ -69,4 +69,14 @@ class ProductController extends Controller
         return redirect()->route('seller.products.index')->with('success', 'Successfully created a new product!');
 
     }
+
+    public function show(Request $request, Product $product)
+    {
+        if ($request->user()->can('view', $product)) {
+            return response()->json([
+                'data' => $product
+            ]);
+        }
+        return redirect()->route('home');
+    }
 }

@@ -51,6 +51,8 @@ Route::middleware('auth.seller')->group(function () {
                 Route::get('/create', 'create')->name('seller.products.create');
 
                 Route::post('/', 'store')->name('seller.products.store');
+
+                Route::get('/{product}', 'show')->name('seller.products.show');
             });
         });
 

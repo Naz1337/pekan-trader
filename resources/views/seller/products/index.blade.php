@@ -19,7 +19,7 @@
             </div>
             <div class="flex flex-wrap gap-4">
                 @foreach($products as $product)
-                    <a class="card card-side bg-base-100 shadow-sm w-[345px] max-h-[200px]" href="https://google.com">
+                    <a class="card card-side bg-base-100 shadow-sm w-[345px] max-h-[200px]" href="{{ route('seller.products.show', compact('product')) }}">
                         <figure>
                             <img class="w-[120px] max-h-[100px] object-contain p-1" src="{{ Storage::url($product->image_path) }}" />
                         </figure>
