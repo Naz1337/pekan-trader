@@ -10,7 +10,7 @@
             <x-nav.side-item url="youtube.com">Dashboard</x-nav.side-item>
             <x-nav.side-item url="yahoo.com">Dashboard</x-nav.side-item>
         </div>
-        <div class="pt-10 px-4 flex-1 @container">
+        <div class="pt-10 mb-12 px-4 flex-1 @container">
             <div class="w-full p-4 bg-base-300 @3xl:w-[48rem] min-w-[400px] rounded-box shadow-sm">
                 @if ($title !== false)
                     <div class="mb-8">

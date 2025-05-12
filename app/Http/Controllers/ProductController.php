@@ -12,7 +12,10 @@ class ProductController extends Controller
     {
         $search_product = $request->input('search_product');
 
-        $products = $request->user()->seller->products()->where('name', 'like', '%' . $search_product . '%')->get();
+        $products = $request->user()->seller->products()
+            ->where('name', 'like', '%' . $search_product . '%')
+            ->orderBy('id', 'desc')
+            ->get();
 
         return view('seller.products.index', compact('search_product', 'products'));
     }
@@ -31,7 +34,7 @@ class ProductController extends Controller
             'stock_quantity' => 'required|integer|min:0',
             'product_image' => 'required|file|image|max:10240',
             'delivery_fee' => 'required|decimal:2|min:0',
-            'is_published' => 'nullable|boolean'
+            'is_published' => 'nullable|accepted'
         ];
 
 //        $validated = $request->validate($rules);
@@ -62,7 +65,7 @@ class ProductController extends Controller
         $new_product->stock_quantity = $validated['stock_quantity'];
         $new_product->image_path = $product_image_path;
         $new_product->delivery_fee = $validated['delivery_fee'];
-        $new_product->is_published = $validated['is_published'];
+        $new_product->is_published = $validated['is_published'] === 'on';
 
         $request->user()->seller->products()->save($new_product);
 
@@ -73,10 +76,21 @@ class ProductController extends Controller
     public function show(Request $request, Product $product)
     {
         if ($request->user()->can('view', $product)) {
-            return response()->json([
-                'data' => $product
-            ]);
+            return view('seller.products.show', compact('product'));
         }
         return redirect()->route('home');
+    }
+
+    public function destroy(Request $request, Product $product)
+    {
+        if ($request->user()->cannot('delete', $product)) {
+            return redirect()->route('home');
+        }
+
+        $productName = $product->name;
+        $product->delete();
+
+        return redirect()->route('seller.products.index')
+            ->with('success', 'Successfully deleted '. $productName . '.');
     }
 }

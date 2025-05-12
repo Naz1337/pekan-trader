@@ -53,6 +53,10 @@ Route::middleware('auth.seller')->group(function () {
                 Route::post('/', 'store')->name('seller.products.store');
 
                 Route::get('/{product}', 'show')->name('seller.products.show');
+
+                Route::put('/{product}', 'update')->name('seller.products.update');
+
+                Route::delete('/{product}', 'destroy')->name('seller.products.destroy');
             });
         });
 
