@@ -1,3 +1,3 @@
-<x-layout.auth>
+<x-layout.main>
 
-</x-layout.auth>
+</x-layout.main>

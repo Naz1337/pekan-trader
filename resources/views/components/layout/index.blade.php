@@ -10,10 +10,11 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     <title>{{ $title }}</title>
     <script src="/scripts/htmx.min.js"></script>
-    <script src="https://unpkg.com/htmx-ext-loading-states@2.0.0/loading-states.js"></script>
+{{--    <script src="https://unpkg.com/htmx-ext-loading-states@2.0.0/loading-states.js"></script>--}}
+    <link rel="preload" as="image" href="/imgs/user-icon.png">
 </head>
 <body>
-    <div style="display: contents;">
+    <div style="display: contents;" class="">
         {{ $slot }}
     </div>
 </body>

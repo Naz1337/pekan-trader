@@ -5,10 +5,10 @@
 ])
 
 <x-layout>
-    <div class="navbar bg-base-200 shadow-sm justify-center">
+    <div class="navbar bg-base-200/50 shadow-sm justify-center">
         <div class="container flex">
             <div class="flex-1">
-                <a class="btn btn-ghost btn-lg" href="{{ route('home') }}">
+                <a class="btn btn-ghost text-accent-content btn-lg" href="{{ route('home') }}">
                     Pekan Trader
                 </a>
             </div>
@@ -24,7 +24,7 @@
                                 <div class="menu-text text-base-content/60">Logged in as <span class="font-semibold">{{ $user->name }}</span></div>
                                 <li><a href="">Profile</a></li>
                                 <div class="divider menu-text m-0"></div>
-                                <li><button type="submit">Logout</button></li>
+                                <li><button type="submit" class="hover:bg-error/40 hover:text-error-content">Logout</button></li>
                             </ul>
                         </div>
                     </form>
@@ -39,7 +39,7 @@
                         @class([
                             'btn',
                             'btn-ghost' => !str_starts_with(request()->path(), 'seller'),
-                            'btn-soft btn-primary' => str_starts_with(request()->path(), 'seller')
+                            'btn-soft btn-secondary' => str_starts_with(request()->path(), 'seller')
                         ])
                         >Merchant Dashboard</a>
                 @endif
@@ -48,7 +48,7 @@
 
     </div>
 
-    <div class="flex flex-col items-center my-12">
+    <div>
         {{ $slot }}
     </div>
 </x-layout>

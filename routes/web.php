@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
@@ -42,9 +43,20 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('auth.seller')->group(function () {
     Route::prefix('seller')->group(function () {
+
+        Route::controller(ProductController::class)->group(function () {
+            Route::prefix('products')->group(function () {
+                Route::get('/', 'index')->name('seller.products.index');
+
+                Route::get('/create', 'create')->name('seller.products.create');
+
+                Route::post('/', 'store')->name('seller.products.store');
+            });
+        });
+
         Route::get('/dashboard', function () {
             return view('seller.dashboard');
-        });
+        })->name('seller.dashboard');
     });
 });
 
