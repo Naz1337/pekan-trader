@@ -106,7 +106,7 @@
         </x-show.field>
         <x-show.field label="Stock">
             <input type="number" min="0" id="stock_quantity" name="stock_quantity" class="input" x-bind:value="oldValue"
-                   x-data="{oldValue: 0}" @@change="
+                   x-data="{oldValue: @json($product->stock_quantity)}" @@change="
                     const result = cleanNumberString($el.value);
                     console.log(result)
                     if (result === null) {
@@ -117,7 +117,7 @@
                         $el.value = result
                         oldValue = $el.value
                     }
-                   " x-init="$nextTick(() => {$el.value = @json($product->stock_quantity) })">
+                   ">
         </x-show.field>
 
 
