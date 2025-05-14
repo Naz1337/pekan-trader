@@ -63,7 +63,7 @@
             @method('PUT')
 
             <div>
-                <input type="checkbox" name="is_published" id="is_published" class="toggle toggle-success"
+                <input type="checkbox" name="is_published" id="is_published" class="toggle toggle-primary"
                        @checked($product->is_published)>
             </div>
         </form>

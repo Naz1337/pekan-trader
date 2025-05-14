@@ -34,7 +34,7 @@
                 ">Edit Image</button>
                 </div>
             </div>
-            <button class="btn" @@click="
+            <button class="btn btn-soft btn-secondary" @@click="
             $event.preventDefault();
 
             $refs.productImage.src = originalImage;
