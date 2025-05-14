@@ -117,7 +117,7 @@
                         $el.value = result
                         oldValue = $el.value
                     }
-                   ">
+                   " x-init="$nextTick(() => {$el.value = @json($product->stock_quantity) })">
         </x-show.field>
 
 

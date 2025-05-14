@@ -20,12 +20,21 @@
             <div class="flex flex-wrap gap-4">
                 @foreach($products as $product)
                     <a class="card card-side bg-base-100 shadow-sm w-[345px] max-h-[200px]" href="{{ route('seller.products.show', compact('product')) }}">
-                        <figure>
+                        <figure class="border-r-1 border-base-content/10">
                             <img class="w-[120px] max-h-[100px] object-contain p-1" src="{{ Storage::url($product->image_path) }}" />
                         </figure>
                         <div class="card-body">
-                            <h2 class="card-title">{{ $product->name }}</h2>
-                            <p class="mb-2">RM 9.99</p>
+                            <div class="flex justify-between items-center">
+                                <h2 class="card-title">{{ $product->name }}</h2>
+                            </div>
+
+                            @if ($product->is_published)
+                                <div class="badge badge-soft badge-success">Published</div>
+                            @else
+                                <div class="badge badge-soft badge-secondary">Not Published</div>
+                            @endif
+
+                            <p class="mb-2">RM {{ number_format($product->price, 2) }}</p>
 
                             <p class="text-secondary justify-self-end"><span class="font-semibold">{{ $product->stock_quantity }}</span> left in stock</p>
                         </div>
