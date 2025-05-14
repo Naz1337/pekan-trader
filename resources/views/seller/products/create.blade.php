@@ -9,7 +9,7 @@
                       :textarea="true" class="min-h-32" :required="false"/>
         <x-form.input id="product_price" label="Product Price:" type="slot">
             <label for="product_price" class="input">
-                RM
+                <span class="label">RM</span>
                 <input type="text" class="grow" id="product_price" name="product_price"
                     placeholder="0.00" min="0" step="0.01" x-data="{
                         oldValue: ''
@@ -102,7 +102,7 @@
         <div class="text-base-content/40">Delivery Details</div>
         <x-form.input id="delivery_fee" label="Delivery Fee:" type="slot" class="mb-8">
             <label for="delivery_fee" class="input">
-                RM
+                <span class="label">RM</span>
                 <input type="text" class="grow" id="delivery_fee" name="delivery_fee"
                        value="0.00" placeholder="0.00" min="0" step="0.01" x-data="{
                         oldValue: ''

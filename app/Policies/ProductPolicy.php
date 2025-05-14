@@ -29,7 +29,7 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        return false;
+        return $user->seller()->exists();
     }
 
     /**
@@ -37,7 +37,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        return false;
+        return $this->view($user, $product);
     }
 
     /**

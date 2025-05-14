@@ -16,7 +16,7 @@
                 @if ($is_logged_in)
                     <form action="{{ route('logout') }}" method="post" class="max-w-[40px] max-h-[40px]">
                         @csrf
-                        <div class="dropdown dropdown-end">
+                        <div class="dropdown dropdown-hover dropdown-end">
                             <div tabindex="0" role="button" class="hover:cursor-pointer rounded-full">
                                 <img src="/imgs/user-icon.png" alt="User">
                             </div>

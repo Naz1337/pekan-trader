@@ -42,20 +42,4 @@
             @endif
         </div>
     @endif
-
-
-    @session('success')
-        <div class="toast" x-data="{show: true}" x-show="show" x-transition>
-            <div class="alert alert-success">
-                <div class="flex gap-2 items-stretch">
-                    <div class="grow">{{ $value }}</div>
-                    <div class="">
-                        <button class="btn btn-ghost btn-circle btn-success max-h-[16px] max-w-[16px]"
-                            @@click="show = false">X</button>
-                    </div>
-                </div>
-
-            </div>
-        </div>
-    @endsession
 </x-layout.seller>

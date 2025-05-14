@@ -54,6 +54,8 @@ Route::middleware('auth.seller')->group(function () {
 
                 Route::get('/{product}', 'show')->name('seller.products.show');
 
+                Route::get('/{product}/edit', 'edit')->name('seller.products.edit');
+
                 Route::put('/{product}', 'update')->name('seller.products.update');
 
                 Route::delete('/{product}', 'destroy')->name('seller.products.destroy');

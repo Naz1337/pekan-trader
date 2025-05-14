@@ -5,7 +5,7 @@
              class="rounded-box shadow-md max-w-120 mb-8 max-h-70">
     </div>
 
-    <div class="flex justify-between max-w-150">
+    <div class="flex justify-between max-w-150 items-center">
         <x-show.field label="Product Name" :value="$product->name" :is-bold="true"/>
         <div class="flex gap-4" x-data>
             <form action="{{ route('seller.products.destroy', compact('product')) }}" method="post" x-ref="deleteForm"
@@ -24,8 +24,8 @@
                     </div>
                     <div class="modal-action">
                         <div class="flex gap-4">
-                            <button class="btn btn-secondary" @@click="$refs.deleteModal.close()">No</button>
-                            <button class="btn btn-outline btn-primary" @@click="
+                            <button class="btn btn-primary" @@click="$refs.deleteModal.close()">No</button>
+                            <button class="btn btn-outline btn-error" @@click="
                             const event = new Event('submit', {
                                 bubbles: true,
                                 cancelable: true
@@ -41,7 +41,7 @@
                 </form>
             </dialog>
             <button class="btn btn-outline btn-error" @@click="$refs.deleteModal.showModal()">Remove</button>
-            <button class="btn btn-primary">Edit</button>
+            <a href="{{ route('seller.products.edit', compact('product')) }}" class="btn btn-primary">Edit</a>
         </div>
     </div>
 
@@ -49,7 +49,7 @@
         @if ($product->description === '')
             <div class="italic text-base-content/40">There is no description for this product</div>
         @else
-            <div class="max-w-80 max-h-40 text-sm text-base-content/70 overflow-auto shadow-sm rounded-box p-2 bg-base-200">
+            <div class="max-h-50 text-sm text-base-content/70 overflow-auto rounded-box p-2 bg-base-200 inset-shadow-2xs">
                 {!! nl2br(e($product->description)) !!}
             </div>
         @endif

@@ -17,5 +17,15 @@
     <div style="display: contents;" class="">
         {{ $slot }}
     </div>
+
+    @session('toast')
+        <div class="toast" x-data="{show: true}" x-show="show" x-transition>
+        <div class="alert alert-{{ $value['type'] }} relative">
+            <button class="absolute top-1 right-1 btn btn-circle btn-success max-h-[16px] max-w-[16px]"
+                    @@click="show = false">X</button>
+            <div>{{ $value['message'] }} </div>
+        </div>
+    </div>
+    @endsession
 </body>
 </html>

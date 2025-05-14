@@ -27,9 +27,13 @@ class ProductController extends Controller
 
     public function store(Request $request)
     {
+        if ($request->user()->cannot('create', Product::class)) {
+            return redirect()->route('home');
+        }
+
         $rules = [
             'product_name' => 'required|string|max:90',
-            'product_description' => 'nullable|string',
+            'product_description' => 'nullable|string|max:1000',
             'product_price' => 'required|decimal:2|min:0',
             'stock_quantity' => 'required|integer|min:0',
             'product_image' => 'required|file|image|max:10240',
@@ -91,6 +95,69 @@ class ProductController extends Controller
         $product->delete();
 
         return redirect()->route('seller.products.index')
-            ->with('success', 'Successfully deleted '. $productName . '.');
+            ->with('toast', ['type' => 'success', 'message' => 'Successfully deleted '. $productName . '.']);
+    }
+
+    public function edit(Request $request, Product $product)
+    {
+        if ($request->user()->cannot('update', $product)) {
+            return redirect()->route('home');
+        }
+
+        return view('seller.products.edit', compact('product'));
+    }
+
+    public function update(Request $request, Product $product)
+    {
+        if ($request->user()->cannot('update', $product)) {
+            return redirect()->route('home');
+        }
+
+        $rules = [
+            'product_name' => 'string|max:90',
+            'product_description' => 'nullable|string|max:1000',
+            'product_price' => 'decimal:2|min:0',
+            'stock_quantity' => 'integer|min:0',
+            'product_image' => 'nullable|file|image|max:10240',
+            'delivery_fee' => 'decimal:2|min:0'
+        ];
+
+        $validation = makeDevFormValidator($request->all(), $rules);
+
+        $validation['validator']->sometimes('is_published', 'accepted', function ($input) {
+            return $input->has('is_published');
+        });
+
+        if ($validation['validator']->fails()) {
+            return $validation['response']();
+        }
+
+        $validated = $validation['validator']->validated();
+
+//        return response()->json(['data' => $request->input(), 'files' => $request->hasFile('product_image')]);
+
+        $product->name = $validated['product_name'] ?? $product->name;
+
+        if (!is_null($validated['product_description'])) {
+            $product->description = $validated['product_description'];
+        }
+
+        $product->price = $validated['product_price'] ?? $product->price;
+
+        if ($request->hasFile('product_image')) {
+            $image_path = $validated['product_image']->store('product_images', 'public');
+            $product->image_path = $image_path;
+        }
+
+        $product->stock_quantity = $validated['stock_quantity'] ?? $product->stock_quantity;
+
+        $product->delivery_fee = $validated['delivery_fee'] ?? $product->delivery_fee;
+
+        $product->is_published = $validated['is_published'] ?? false;
+
+        $product->save();
+
+        return redirect()->route('seller.products.show', compact('product'))
+            ->with('toast', ['type' => 'success', 'message' => 'Successfully updated ' . $product->name . '.']);
     }
 }
