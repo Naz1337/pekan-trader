@@ -20,3 +20,5 @@
         @apply m-0 px-[calc(0.25rem*3)] py-[calc(0.25rem*1.5)];
     }
 }
+
+@source inline('basis-[125px]');

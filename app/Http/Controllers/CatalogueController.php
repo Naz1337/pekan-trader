@@ -12,4 +12,9 @@ class CatalogueController extends Controller
         $products = Product::all();
         return view('welcome', compact('products'));
     }
+
+    function show(Product $product)
+    {
+        return view('products.show', compact('product'));
+    }
 }

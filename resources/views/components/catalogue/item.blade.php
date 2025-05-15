@@ -11,7 +11,7 @@
     <div class="card-body justify-between">
         <div>
             <h2 class="card-title">{{ $product->name }}</h2>
-            <div>RM {{ number_format($product->price, 2) }}</div>
+            <div class="text-primary">RM {{ number_format($product->price, 2) }}</div>
         </div>
 
         <div class="">
