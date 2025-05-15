@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Product;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,7 +28,7 @@ class AuthController extends Controller
         // Attempt to log the user in
         if (auth()->attempt($validated)) {
             // Redirect to the intended page
-            return response()->view('welcome', ['user' => auth()->user()])
+            return response()->view('welcome', ['products' => Product::all()])
                 ->header('HX-Redirect', route('home'));
         }
 
@@ -69,7 +70,7 @@ class AuthController extends Controller
         auth()->logout();
         session()->invalidate();
 
-        return redirect()->route('login');
+        return redirect()->route('home');
     }
 
     public function showRegisterSellerStep(Request $request)

@@ -63,4 +63,8 @@ Route::get('/', [CatalogueController::class, 'home'])->name('home');
 
 Route::controller(CatalogueController::class)->group(function () {
     Route::get('/', 'home')->name('home');
+
+    Route::prefix('products')->group(function () {
+       Route::get('/{product}', 'show')->name('catalogue.show');
+    });
 });
