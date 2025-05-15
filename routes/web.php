@@ -29,16 +29,7 @@ Route::middleware('guest')->group(function () {
 
 // guard for normal users
 Route::middleware('auth')->group(function () {
-//    Route::get('/', function () {
-//        return view('welcome',
-//            ['user' => auth()->user()]);
-//    })->name('home');
-
-    Route::post('/logout', function () {
-        auth()->logout();
-
-        return redirect()->route('login');
-    })->name('logout');
+    Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
 Route::middleware('auth.seller')->group(function () {
@@ -69,3 +60,7 @@ Route::middleware('auth.seller')->group(function () {
 });
 
 Route::get('/', [CatalogueController::class, 'home'])->name('home');
+
+Route::controller(CatalogueController::class)->group(function () {
+    Route::get('/', 'home')->name('home');
+});
