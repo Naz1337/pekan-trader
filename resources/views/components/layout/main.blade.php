@@ -20,12 +20,14 @@
                             <div tabindex="0" role="button" class="hover:cursor-pointer rounded-full">
                                 <img src="/imgs/user-icon.png" alt="User">
                             </div>
-                            <ul tabindex="0" class="menu dropdown-content bg-base-300 rounded-box z-1 w-52 p-2 shadow-sm mt-1">
-                                <div class="menu-text text-base-content/60">Logged in as <span class="font-semibold">{{ $user->name }}</span></div>
-                                <li><a href="">Profile</a></li>
-                                <div class="divider menu-text m-0"></div>
-                                <li><button type="submit" class="hover:bg-error/40 hover:text-error-content">Logout</button></li>
-                            </ul>
+                            <div tabindex="0" class="menu dropdown-content">
+                                <ul class="bg-base-300 rounded-box z-1 w-52 p-2 shadow-sm">
+                                    <div class="menu-text text-base-content/60">Logged in as <span class="font-semibold">{{ $user->name }}</span></div>
+                                    <li><a href="">Profile</a></li>
+                                    <div class="divider menu-text m-0"></div>
+                                    <li><button type="submit" class="hover:bg-error/40 hover:text-error-content">Logout</button></li>
+                                </ul>
+                            </div>
                         </div>
                     </form>
                 @else
