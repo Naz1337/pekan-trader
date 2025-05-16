@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogueController;
+use App\Http\Controllers\OrderController;
 
 Route::middleware('guest')->group(function () {
     Route::controller(AuthController::class)->group(function () {
@@ -73,5 +74,13 @@ Route::controller(CatalogueController::class)->group(function () {
         Route::post('/cart/checkout/place_order', 'place_order')->name('order.place');
         Route::post('/cart/checkout', 'show_checkout')->name('checkout.show');
         Route::delete('/cart/{product}', 'remove_from_cart')->name('cart.remove');
+    });
+});
+
+Route::controller(OrderController::class)->group(function () {
+    Route::prefix('orders')->group(function () {
+        Route::get('/', 'index')->name('orders.index');
+        Route::get('/{order}', 'show')->name('orders.show');
+        Route::post('/{order}/pay', 'pay')->name('order.pay');
     });
 });

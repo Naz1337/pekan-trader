@@ -47,6 +47,8 @@
                 @endif
 
                     <a href="{{ route('cart.show') }}" class="btn btn-ghost">Cart</a>
+
+                    <a href="{{ route('orders.index') }}" class="btn btn-ghost">My Order</a>
             </div>
         </div>
 
