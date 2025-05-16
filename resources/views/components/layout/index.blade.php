@@ -21,7 +21,7 @@
     @session('toast')
         <div class="toast" x-data="{show: true}" x-show="show" x-transition>
         <div class="alert alert-{{ $value['type'] }} relative">
-            <button class="absolute top-1 right-1 btn btn-circle btn-success max-h-[16px] max-w-[16px]"
+            <button class="absolute top-1 right-1 btn btn-circle btn-{{ $value['type'] }} max-h-[16px] max-w-[16px]"
                     @@click="show = false">X</button>
             <div>{{ $value['message'] }} </div>
         </div>

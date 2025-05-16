@@ -9,7 +9,7 @@
             <div class="mb-2">
                 <span class="font-semibold">Status:</span>
                 <span class="badge {{ $order->payment_status === 'unpaid' ? 'badge-error' : 'badge-success' }}">
-                    {{ ucfirst($order->payment_status) }}
+                    {{ ucwords(str_replace('_', ' ', $order->payment_status)) }}
                 </span>
             </div>
             <div class="mb-2">
@@ -63,9 +63,19 @@
                         <div class="text-error text-sm mt-1">{{ $message }}</div>
                         @enderror
                     </div>
+                    <input type="hidden" value="{{ $order->payment_method }}" name="method">
                     <button type="submit" class="btn btn-primary w-full">Submit Payment</button>
                 </form>
             </div>
+        @else
+            @if ($order->order_payment && $order->order_payment->receipt_path)
+                <div class="w-full mb-6 p-4 bg-base-200 rounded-box">
+                    <h2 class="text-xl font-bold mb-4">Payment Receipt</h2>
+                    <a href="{{ Storage::url($order->order_payment->receipt_path) }}" class="btn btn-secondary" download>
+                        Download Receipt
+                    </a>
+                </div>
+            @endif
         @endif
     </div>
 </x-layout.main>

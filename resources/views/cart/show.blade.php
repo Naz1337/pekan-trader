@@ -1,11 +1,13 @@
 @use(Illuminate\Support\Facades\Storage)
 <x-layout.main>
     <div class="max-w-280 ms-auto me-auto mt-20 rounded-box flex flex-col items-center p-4">
-
         <h1 class="text-4xl font-bold mb-8">Your Cart</h1>
 
         @if ($products->isEmpty())
             <div class="text-center text-base-content/60 italic">Your cart is empty.</div>
+            <a href="{{ route('home') }}" class="btn btn-secondary mt-6">
+                Continue Shopping
+            </a>
         @else
             <div class="flex flex-col gap-6">
                 @foreach ($products as $product)
@@ -30,7 +32,7 @@
 
             <div class="mt-8 p-4 bg-base-300 rounded-box">
                 <div class="flex justify-between items-center">
-                    <div class="text-2xl font-bold">Total:</div>
+                    <div class="text-2xl font-bold me-[1rem]">Total:</div>
                     <div class="text-2xl text-primary font-bold">
                         RM {{ number_format($products->sum(fn($product) => $product->price * $product->pivot->quantity), 2) }}
                     </div>
@@ -39,6 +41,12 @@
                     @csrf
                     <button class="btn btn-primary w-full">Checkout</button>
                 </form>
+            </div>
+
+            <div>
+                <a href="{{ route('home') }}" class="btn btn-secondary btn-soft mt-6">
+                    Continue Shopping
+                </a>
             </div>
         @endif
 

@@ -9,7 +9,7 @@
                         <span class="ml-2 text-sm text-base-content/60">Seller: {{ $order->seller->business_name ?? 'N/A' }}</span>
                     </div>
                     <span class="badge {{ $order->payment_status === 'unpaid' ? 'badge-error' : 'badge-success' }}">
-                        {{ ucfirst($order->payment_status) }}
+                        {{ ucwords(str_replace('_', ' ', $order->payment_status)) }}
                     </span>
                 </div>
                 <div class="mb-2">

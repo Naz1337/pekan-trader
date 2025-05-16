@@ -40,8 +40,8 @@ class CatalogueController extends Controller
             $user->cart->products()->attach($product->id, ['quantity' => $request->input('quantity')]);
         }
 
-        return redirect()->route('catalogue.show', compact('product'))
-            ->with('toast', ['type'=>'success', 'message' => 'saw some snow rock hard']);
+        return redirect()->route('cart.show')
+            ->with('toast', ['type'=>'success', 'message' => 'Successfully added product to your cart.']);
     }
 
     public function show_cart(Request $request)
@@ -98,6 +98,17 @@ class CatalogueController extends Controller
 
         $groupedProducts = $user->cart->products->groupBy('seller_id');
 
+        // 1. Check stock for all products
+        foreach ($user->cart->products as $product) {
+            if ($product->stock_quantity < $product->pivot->quantity) {
+                return redirect()->route('cart.show')->with('toast', [
+                    'type' => 'error',
+                    'message' => "Not enough stock for {$product->name}. Available: {$product->stock_quantity}, Requested: {$product->pivot->quantity}"
+                ]);
+            }
+        }
+
+        // 2. Place orders and allocate stock
         foreach ($groupedProducts as $sellerId => $products) {
             $order = $user->orders()->create([
                 'seller_id' => $sellerId,
@@ -106,6 +117,9 @@ class CatalogueController extends Controller
             ]);
 
             foreach ($products as $product) {
+                // Decrement stock
+                $product->decrement('stock_quantity', $product->pivot->quantity);
+
                 $order->items()->create([
                     'product_id' => $product->id,
                     'quantity' => $product->pivot->quantity,
