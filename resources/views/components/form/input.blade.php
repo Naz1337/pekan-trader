@@ -8,6 +8,7 @@
     'basis' => '200',
     'textarea' => false,
     'accept' => null,
+    'min' => null,
 ])
 
 <div {{ $attributes->merge(['class' => 'flex']) }}>
@@ -22,7 +23,8 @@
             <x-form.saner-upload-input :id="$id" :accept="$accept ?? '*'" :required="$required"/>
             @else
             <input type="{{ $type }}" id="{{ $id }}" name="{{ $name ?? $id  }}"  value="{{ $value }}"
-                   class="input grow" {{ $required ? 'required' : '' }}>
+                   class="input grow" {{ $required ? 'required' : '' }}
+                   {{ $min ? 'min='. $min : '' }}>
             @endif
         @else
         <textarea id="{{ $id }}" name="{{ $name ?? $id  }}" class="textarea grow" {{ $required ? 'required' : '' }}>{{ $value }}</textarea>

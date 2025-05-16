@@ -59,12 +59,19 @@ Route::middleware('auth.seller')->group(function () {
     });
 });
 
-Route::get('/', [CatalogueController::class, 'home'])->name('home');
-
 Route::controller(CatalogueController::class)->group(function () {
     Route::get('/', 'home')->name('home');
 
     Route::prefix('products')->group(function () {
        Route::get('/{product}', 'show')->name('catalogue.show');
+
+       Route::post('/{product}/add_to_cart', 'add_to_cart')->name('catalogue.add_to_cart');
+    });
+
+    Route::middleware('auth')->group(function () {
+        Route::get('/cart', 'show_cart')->name('cart.show');
+        Route::post('/cart/checkout/place_order', 'place_order')->name('order.place');
+        Route::post('/cart/checkout', 'show_checkout')->name('checkout.show');
+        Route::delete('/cart/{product}', 'remove_from_cart')->name('cart.remove');
     });
 });

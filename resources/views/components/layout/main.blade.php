@@ -43,12 +43,14 @@
                         ])
                         >Merchant Dashboard</a>
                 @endif
+
+                    <a href="{{ route('cart.show') }}" class="btn btn-ghost">Cart</a>
             </div>
         </div>
 
     </div>
 
-    <div>
+    <div class="mb-32">
         {{ $slot }}
     </div>
 </x-layout>
