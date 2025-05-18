@@ -56,6 +56,11 @@ class OrderController extends Controller
         $order_payment->order->payment_status = 'in_payment';
         $order_payment->order->save();
 
+        $order->order_histories()->create([
+            'message' => 'The customer uploaded a transaction receipt.',
+            'created_at' => now(),
+        ]);
+
         return redirect()->route('orders.show', $order->id)
             ->with('success', 'Payment receipt uploaded successfully. Your payment is being processed.');
     }

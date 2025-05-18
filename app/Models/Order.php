@@ -34,4 +34,14 @@ class Order extends Model
     {
         return $this->hasOne(OrderPayment::class);
     }
+
+    public function order_histories(): HasMany
+    {
+        return $this->hasMany(OrderHistory::class);
+    }
+
+    public function address(): BelongsTo
+    {
+        return $this->belongsTo(Address::class);
+    }
 }

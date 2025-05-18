@@ -8,12 +8,28 @@
                 <form class="p-6 bg-base-200 rounded-box"
                       action="{{ route('catalogue.add_to_cart', compact('product')) }}"
                       method="post">
-                    <x-form.input id="quantity" label="Quantity:" type="number" value="1" class="mb-8"
-                                  min="1"/>
-                    <button class="btn btn-primary w-full">
-                        <x-icon.cart-plus class="size-[1.2em] fill-primary-content"/>
-                        Add to Cart
-                    </button>
+
+                    <div class="mb-4">
+                        <strong>Seller:</strong> <span class="link">{{ $product->seller->business_name }}</span>
+                    </div>
+                    <div class="mb-8">
+                        <strong>Stock Available:</strong> {{ $product->stock_quantity }}
+                    </div>
+
+                    @if ($product->stock_quantity > 0)
+                        <x-form.input id="quantity" label="Quantity:" type="number" value="1" class="mb-8"
+                                      min="1" max="{{ $product->stock_quantity }}"/>
+                        <button class="btn btn-primary w-full">
+                            <x-icon.cart-plus class="size-[1.2em] fill-primary-content"/>
+                            Add to Cart
+                        </button>
+                    @else
+                        <div class="text-base-content/60 italic mb-8">Out of stock</div>
+                        <button class="btn btn-primary w-full" disabled>
+                            <x-icon.cart-plus class="size-[1.2em] fill-primary-content"/>
+                            Add to Cart
+                        </button>
+                    @endif
                     @csrf
                 </form>
             </div>

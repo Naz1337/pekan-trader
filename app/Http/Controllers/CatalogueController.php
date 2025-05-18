@@ -48,11 +48,11 @@ class CatalogueController extends Controller
     {
         $user = $request->user();
 
-        if (!$user->cart) {
-            return redirect()->route('home')->with('toast', ['type' => 'info', 'message' => 'Your cart is empty.']);
+        if ($user->cart) {
+            $products = $user->cart->products()->withPivot('quantity')->get();
+        } else {
+            $products = collect(); // Ensure $products is a collection
         }
-
-        $products = $user->cart->products()->withPivot('quantity')->get();
 
         return view('cart.show', compact('products'));
     }
@@ -81,7 +81,9 @@ class CatalogueController extends Controller
             ];
         });
 
-        return view('checkout.show', compact('groupedProducts'));
+        $addresses = $user->addresses; // Retrieve the user's addresses
+
+        return view('checkout.show', compact('groupedProducts', 'addresses'));
     }
 
     public function place_order(Request $request)
@@ -94,6 +96,24 @@ class CatalogueController extends Controller
 
         $request->validate([
             'payment_method' => 'required|in:bank_transfer',
+            'address_line_1' => 'required|string|max:255',
+            'city' => 'required|string|max:255',
+            'state' => 'required|string|max:255',
+            'postal_code' => 'required|string|max:20',
+            'country' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:20',
+        ]);
+
+        // Create a new address for every order and handle 'remember_address'
+        $address = $user->addresses()->create([
+            'address_line_1' => $request->input('address_line_1'),
+            'address_line_2' => $request->input('address_line_2'),
+            'city' => $request->input('city'),
+            'state' => $request->input('state'),
+            'postal_code' => $request->input('postal_code'),
+            'country' => $request->input('country'),
+            'phone_number' => $request->input('phone_number'),
+            'is_default' => $request->has('remember_address'), // Set to true if 'remember_address' is checked
         ]);
 
         $groupedProducts = $user->cart->products->groupBy('seller_id');
@@ -114,6 +134,7 @@ class CatalogueController extends Controller
                 'seller_id' => $sellerId,
                 'payment_method' => $request->input('payment_method'),
                 'total_amount' => $products->sum(fn($product) => $product->price * $product->pivot->quantity),
+                'address_id' => $address ? $address->id : null,
             ]);
 
             foreach ($products as $product) {
@@ -131,6 +152,6 @@ class CatalogueController extends Controller
         // Clear the cart
         $user->cart->products()->detach();
 
-        return redirect()->route('home')->with('toast', ['type' => 'success', 'message' => 'Order placed successfully!']);
+        return redirect()->route('orders.show', ['order' => $order->id])->with('toast', ['type' => 'success', 'message' => 'Order placed successfully!']);
     }
 }

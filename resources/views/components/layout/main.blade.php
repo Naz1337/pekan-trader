@@ -46,9 +46,11 @@
                         >Merchant Dashboard</a>
                 @endif
 
+                @if ($is_logged_in)
                     <a href="{{ route('cart.show') }}" class="btn btn-ghost">Cart</a>
 
                     <a href="{{ route('orders.index') }}" class="btn btn-ghost">My Order</a>
+                @endif
             </div>
         </div>
 

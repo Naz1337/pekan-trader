@@ -39,6 +39,24 @@
             </div>
         </div>
 
+        <div class="w-full mb-6 p-4 bg-base-200 rounded-box">
+            <h2 class="text-2xl font-semibold mb-4">Order History</h2>
+            @if ($order->order_histories->isEmpty())
+                <p class="text-base-content/60">No history available for this order.</p>
+            @else
+                <ul class="flex flex-col gap-4">
+                    @foreach ($order->order_histories as $history)
+                        <li class="p-4 bg-base-300 rounded-box">
+                            <div class="text-lg font-semibold">{{ $history->message }}</div>
+                            <div class="text-sm text-base-content/60">
+                                {{ $history->created_at->format('F j, Y, g:i A') }}
+                            </div>
+                        </li>
+                    @endforeach
+                </ul>
+            @endif
+        </div>
+
         @if ($order->payment_status === 'unpaid')
             <div class="w-full mb-6 p-4 bg-base-200 rounded-box">
                 <h2 class="text-xl font-bold mb-4">Bank Transfer Payment</h2>
