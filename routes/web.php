@@ -54,6 +54,15 @@ Route::middleware('auth.seller')->group(function () {
             });
         });
 
+        Route::controller(OrderController::class)->group(function () {
+            Route::prefix('orders')->group(function () {
+                Route::get('/', 'seller_index')->name('seller.orders.index');
+
+                Route::get('/{order}', 'seller_show')->name('seller.orders.show');
+
+            });
+        });
+
         Route::get('/dashboard', function () {
             return view('seller.dashboard');
         })->name('seller.dashboard');

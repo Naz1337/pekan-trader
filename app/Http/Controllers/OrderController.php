@@ -64,4 +64,16 @@ class OrderController extends Controller
         return redirect()->route('orders.show', $order->id)
             ->with('success', 'Payment receipt uploaded successfully. Your payment is being processed.');
     }
+
+    public function seller_index(Request $request)
+    {
+        // Get the logged-in user's seller relationship
+        $seller = $request->user()->seller;
+
+        // Query orders related to the seller
+        $orders = $seller->orders()->latest()->get();
+
+        // Return a view with the orders
+        return view('seller.orders.index', compact('orders'));
+    }
 }
