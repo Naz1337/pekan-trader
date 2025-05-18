@@ -49,10 +49,30 @@
                     <option selected value="new_address">Create new Address</option>
                     @foreach ($addresses as $address)
                         <option value="{{ $address->id }}">
-                            {{ $address->address_line_1 }}, {{ $address->city }}, {{ $address->state }}, {{ $address->postal_code }}
+                            {{ $address->address_line_1 }}, <span class="text-base-content/60">{{ $address->phone_number }}</span>
                         </option>
                     @endforeach
                 </select>
+
+                <script>
+                    let addresses = {};
+                    @foreach ($addresses as $address)
+                        addresses[{{ $address->id }}] = {
+                        recipient_name: "{{ addslashes($address->recipient_name) }}",
+                        address_line_1: "{{ addslashes($address->address_line_1) }}",
+                        address_line_2: "{{ addslashes($address->address_line_2) }}",
+                        city: "{{ addslashes($address->city) }}",
+                        state: "{{ addslashes($address->state) }}",
+                        postal_code: "{{ addslashes($address->postal_code) }}",
+                        country: "{{ addslashes($address->country) }}",
+                        phone_number: "{{ addslashes($address->phone_number) }}",
+                        is_default: {{ $address->is_default ? 'true' : 'false' }}
+                    };
+                    @endforeach
+
+                    window.addresses = addresses;
+                    console.log(addresses);
+                </script>
 
                 <x-form.input id="recipient_name" label="Recipient Name:" class="mb-4" :value="request()->user()->name"/>
                 <x-form.input id="address_line_1" label="Address Line 1:" class="mb-4" />

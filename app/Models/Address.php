@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Address extends Model
 {
+    protected $guarded = ['user_id'];
+
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);

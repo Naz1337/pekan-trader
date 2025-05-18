@@ -13,6 +13,7 @@ class Order extends Model
         'seller_id',
         'payment_method',
         'total_amount',
+        'address_id',
     ];
 
     public function items(): HasMany
