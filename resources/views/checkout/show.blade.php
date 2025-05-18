@@ -42,44 +42,46 @@
         <form action="{{ route('order.place') }}" method="post" class="w-full">
             @csrf
             <div x-data="{
-        selectedAddressId: 'new_address',
-        addresses: {{ Js::from($addresses->keyBy('id')) }},
-        recipient_name: '{{ addslashes(request()->user()->name) }}',
-        address_line_1: '',
-        address_line_2: '',
-        city: '',
-        state: '',
-        postal_code: '',
-        country: 'Malaysia',
-        phone_number: '',
-        remember_address: false,
-        updateFormFields() {
-            if (this.selectedAddressId === 'new_address') {
-                this.recipient_name = '{{ addslashes(request()->user()->name) }}';
-                this.address_line_1 = '';
-                this.address_line_2 = '';
-                this.city = '';
-                this.state = '';
-                this.postal_code = '';
-                this.country = 'Malaysia';
-                this.phone_number = '';
-                this.remember_address = false;
-            } else {
-                const selectedAddress = this.addresses[this.selectedAddressId];
-                if (selectedAddress) {
-                    this.recipient_name = selectedAddress.recipient_name || '';
-                    this.address_line_1 = selectedAddress.address_line_1 || '';
-                    this.address_line_2 = selectedAddress.address_line_2 || '';
-                    this.city = selectedAddress.city || '';
-                    this.state = selectedAddress.state || '';
-                    this.postal_code = selectedAddress.postal_code || '';
-                    this.country = selectedAddress.country || '';
-                    this.phone_number = selectedAddress.phone_number || '';
-                    this.remember_address = selectedAddress.is_default || false;
-                }
+    selectedAddressId: 'new_address',
+    addresses: {{ Js::from($addresses->keyBy('id')) }},
+    recipient_name: '{{ addslashes(request()->user()->name) }}',
+    address_line_1: '',
+    address_line_2: '',
+    city: '',
+    state: '',
+    postal_code: '',
+    country: 'Malaysia',
+    phone_number: '',
+    remember_address: true,
+    isNewAddress: true, // Added: Tracks if creating a new address
+    updateFormFields() {
+        this.isNewAddress = (this.selectedAddressId === 'new_address'); // Added: Update isNewAddress
+        if (this.isNewAddress) {
+            this.recipient_name = '{{ addslashes(request()->user()->name) }}';
+            this.address_line_1 = '';
+            this.address_line_2 = '';
+            this.city = '';
+            this.state = '';
+            this.postal_code = '';
+            this.country = 'Malaysia';
+            this.phone_number = '';
+            this.remember_address = true;
+        } else {
+            const selectedAddress = this.addresses[this.selectedAddressId];
+            if (selectedAddress) {
+                this.recipient_name = selectedAddress.recipient_name || '';
+                this.address_line_1 = selectedAddress.address_line_1 || '';
+                this.address_line_2 = selectedAddress.address_line_2 || '';
+                this.city = selectedAddress.city || '';
+                this.state = selectedAddress.state || '';
+                this.postal_code = selectedAddress.postal_code || '';
+                this.country = selectedAddress.country || '';
+                this.phone_number = selectedAddress.phone_number || '';
+                this.remember_address = selectedAddress.is_default || false;
             }
         }
-    }"
+    }
+}"
                  @@change="updateFormFields()"
                  class="w-full p-4 bg-base-200 rounded-box mb-6">
                 <h2 class="text-xl font-bold mb-4">Shipping Address</h2>
@@ -96,19 +98,19 @@
 
                 {{-- Remove the old script block as Alpine now handles this --}}
 
-                <x-form.input id="recipient_name" label="Recipient Name:" class="mb-4" x-model="recipient_name"/>
-                <x-form.input id="address_line_1" label="Address Line 1:" class="mb-4" x-model="address_line_1"/>
-                <x-form.input id="address_line_2" label="Address Line 2:" class="mb-4" :required="false" x-model="address_line_2"/>
-                <x-form.input id="city" label="City:" class="mb-4" x-model="city"/>
-                <x-form.input id="state" label="State:" class="mb-4" x-model="state"/>
-                <x-form.input id="postal_code" label="Postal Code:" class="mb-4" x-model="postal_code"/>
-                <x-form.input id="country" label="Country:" class="mb-4" x-model="country"/>
-                <x-form.input id="phone_number" label="Phone Number:" class="mb-4" x-model="phone_number"/>
+                <x-form.input id="recipient_name" label="Recipient Name:" class="mb-4" x-model="recipient_name" x-bind:disabled="!isNewAddress"/>
+                <x-form.input id="address_line_1" label="Address Line 1:" class="mb-4" x-model="address_line_1" x-bind:disabled="!isNewAddress"/>
+                <x-form.input id="address_line_2" label="Address Line 2:" class="mb-4" :required="false" x-model="address_line_2" x-bind:disabled="!isNewAddress"/>
+                <x-form.input id="city" label="City:" class="mb-4" x-model="city" x-bind:disabled="!isNewAddress"/>
+                <x-form.input id="state" label="State:" class="mb-4" x-model="state" x-bind:disabled="!isNewAddress"/>
+                <x-form.input id="postal_code" label="Postal Code:" class="mb-4" x-model="postal_code" x-bind:disabled="!isNewAddress"/>
+                <x-form.input id="country" label="Country:" class="mb-4" x-model="country" x-bind:disabled="!isNewAddress"/>
+                <x-form.input id="phone_number" label="Phone Number:" class="mb-4" x-model="phone_number" x-bind:disabled="!isNewAddress"/>
                 <x-form.input id="remember_address" label="Remember this address for future use:" type="slot"
                               class="mb-4">
                     <div class="flex h-full flex-col justify-center">
                         <input type="checkbox" id="remember_address" name="remember_address"
-                               class="checkbox self-start" x-model="remember_address"/>
+                               class="checkbox self-start" x-model="remember_address" x-bind:disabled="!isNewAddress"/>
                     </div>
                 </x-form.input>
             </div>
