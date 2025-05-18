@@ -25,7 +25,8 @@
             @else
             <input type="{{ $type }}" id="{{ $id }}" name="{{ $name ?? $id  }}"  value="{{ $value }}"
                    class="input grow" {{ $required ? 'required' : '' }} {{ $max ? 'max='. $max : '' }}
-                   {{ $min ? 'min='. $min : '' }}  {{ $attributes->only('x-model') }}>
+                   {{ $min ? 'min='. $min : '' }}  {{ $attributes->only('x-model') }}
+                   {{ $attributes->only('x-bind:disabled') }} >
             @endif
         @else
         <textarea id="{{ $id }}" name="{{ $name ?? $id  }}" class="textarea grow" {{ $required ? 'required' : '' }}>{{ $value }}</textarea>

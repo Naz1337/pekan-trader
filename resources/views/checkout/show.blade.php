@@ -53,9 +53,9 @@
     country: 'Malaysia',
     phone_number: '',
     remember_address: true,
-    isNewAddress: true, // Added: Tracks if creating a new address
+    isNewAddress: true,
     updateFormFields() {
-        this.isNewAddress = (this.selectedAddressId === 'new_address'); // Added: Update isNewAddress
+        this.isNewAddress = (this.selectedAddressId === 'new_address');
         if (this.isNewAddress) {
             this.recipient_name = '{{ addslashes(request()->user()->name) }}';
             this.address_line_1 = '';
@@ -82,12 +82,13 @@
         }
     }
 }"
-                 @@change="updateFormFields()"
                  class="w-full p-4 bg-base-200 rounded-box mb-6">
                 <h2 class="text-xl font-bold mb-4">Shipping Address</h2>
 
                 <label for="address_selector" class="block font-medium mb-2 label">Select an Address:</label>
-                <select id="address_selector" name="address_selector" class="select w-full mb-8" x-model="selectedAddressId">
+                <select id="address_selector" name="address_selector" class="select w-full mb-8"
+                        x-model="selectedAddressId"
+                        @@change="updateFormFields()"> {{-- Moved @@change here --}}
                     <option value="new_address">Create new Address</option>
                     @foreach ($addresses as $address)
                         <option value="{{ $address->id }}">
@@ -95,8 +96,6 @@
                         </option>
                     @endforeach
                 </select>
-
-                {{-- Remove the old script block as Alpine now handles this --}}
 
                 <x-form.input id="recipient_name" label="Recipient Name:" class="mb-4" x-model="recipient_name" x-bind:disabled="!isNewAddress"/>
                 <x-form.input id="address_line_1" label="Address Line 1:" class="mb-4" x-model="address_line_1" x-bind:disabled="!isNewAddress"/>
@@ -111,6 +110,7 @@
                     <div class="flex h-full flex-col justify-center">
                         <input type="checkbox" id="remember_address" name="remember_address"
                                class="checkbox self-start" x-model="remember_address" x-bind:disabled="!isNewAddress"/>
+                        {{-- Removed the @@click from here as x-model handles it, unless the console.log was important for debugging --}}
                     </div>
                 </x-form.input>
             </div>
