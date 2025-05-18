@@ -9,10 +9,10 @@
     'textarea' => false,
     'accept' => null,
     'min' => null,
-    'max' => null,
+    'max' => null
 ])
 
-<div {{ $attributes->merge(['class' => 'flex']) }}>
+<div {{ $attributes->merge(['class' => 'flex'])->except('x-model') }}>
     <label for="{{ $id }}" class="basis-[{{ $basis }}px] text-base-content/60 mt-2">{{ $label }}</label>
     @if ($type === 'slot')
         <div class="grow flex flex-col justify-center">
@@ -25,7 +25,7 @@
             @else
             <input type="{{ $type }}" id="{{ $id }}" name="{{ $name ?? $id  }}"  value="{{ $value }}"
                    class="input grow" {{ $required ? 'required' : '' }} {{ $max ? 'max='. $max : '' }}
-                   {{ $min ? 'min='. $min : '' }}>
+                   {{ $min ? 'min='. $min : '' }}  {{ $attributes->only('x-model') }}>
             @endif
         @else
         <textarea id="{{ $id }}" name="{{ $name ?? $id  }}" class="textarea grow" {{ $required ? 'required' : '' }}>{{ $value }}</textarea>

@@ -41,12 +41,52 @@
 
         <form action="{{ route('order.place') }}" method="post" class="w-full">
             @csrf
-            <div class="w-full p-4 bg-base-200 rounded-box mb-6">
+            <div x-data="{
+        selectedAddressId: 'new_address',
+        addresses: {{ Js::from($addresses->keyBy('id')) }},
+        recipient_name: '{{ addslashes(request()->user()->name) }}',
+        address_line_1: '',
+        address_line_2: '',
+        city: '',
+        state: '',
+        postal_code: '',
+        country: 'Malaysia',
+        phone_number: '',
+        remember_address: false,
+        updateFormFields() {
+            if (this.selectedAddressId === 'new_address') {
+                this.recipient_name = '{{ addslashes(request()->user()->name) }}';
+                this.address_line_1 = '';
+                this.address_line_2 = '';
+                this.city = '';
+                this.state = '';
+                this.postal_code = '';
+                this.country = 'Malaysia';
+                this.phone_number = '';
+                this.remember_address = false;
+            } else {
+                const selectedAddress = this.addresses[this.selectedAddressId];
+                if (selectedAddress) {
+                    this.recipient_name = selectedAddress.recipient_name || '';
+                    this.address_line_1 = selectedAddress.address_line_1 || '';
+                    this.address_line_2 = selectedAddress.address_line_2 || '';
+                    this.city = selectedAddress.city || '';
+                    this.state = selectedAddress.state || '';
+                    this.postal_code = selectedAddress.postal_code || '';
+                    this.country = selectedAddress.country || '';
+                    this.phone_number = selectedAddress.phone_number || '';
+                    this.remember_address = selectedAddress.is_default || false;
+                }
+            }
+        }
+    }"
+                 @@change="updateFormFields()"
+                 class="w-full p-4 bg-base-200 rounded-box mb-6">
                 <h2 class="text-xl font-bold mb-4">Shipping Address</h2>
 
                 <label for="address_selector" class="block font-medium mb-2 label">Select an Address:</label>
-                <select id="address_selector" name="address_selector" class="select w-full mb-8">
-                    <option selected value="new_address">Create new Address</option>
+                <select id="address_selector" name="address_selector" class="select w-full mb-8" x-model="selectedAddressId">
+                    <option value="new_address">Create new Address</option>
                     @foreach ($addresses as $address)
                         <option value="{{ $address->id }}">
                             {{ $address->address_line_1 }}, <span class="text-base-content/60">{{ $address->phone_number }}</span>
@@ -54,39 +94,21 @@
                     @endforeach
                 </select>
 
-                <script>
-                    let addresses = {};
-                    @foreach ($addresses as $address)
-                        addresses[{{ $address->id }}] = {
-                        recipient_name: "{{ addslashes($address->recipient_name) }}",
-                        address_line_1: "{{ addslashes($address->address_line_1) }}",
-                        address_line_2: "{{ addslashes($address->address_line_2) }}",
-                        city: "{{ addslashes($address->city) }}",
-                        state: "{{ addslashes($address->state) }}",
-                        postal_code: "{{ addslashes($address->postal_code) }}",
-                        country: "{{ addslashes($address->country) }}",
-                        phone_number: "{{ addslashes($address->phone_number) }}",
-                        is_default: {{ $address->is_default ? 'true' : 'false' }}
-                    };
-                    @endforeach
+                {{-- Remove the old script block as Alpine now handles this --}}
 
-                    window.addresses = addresses;
-                    console.log(addresses);
-                </script>
-
-                <x-form.input id="recipient_name" label="Recipient Name:" class="mb-4" :value="request()->user()->name"/>
-                <x-form.input id="address_line_1" label="Address Line 1:" class="mb-4" />
-                <x-form.input id="address_line_2" label="Address Line 2:" class="mb-4" :required="false"/>
-                <x-form.input id="city" label="City:" class="mb-4"  />
-                <x-form.input id="state" label="State:" class="mb-4"  />
-                <x-form.input id="postal_code" label="Postal Code:" class="mb-4"  />
-                <x-form.input id="country" label="Country:" class="mb-4" value="Malaysia"/>
-                <x-form.input id="phone_number" label="Phone Number:" class="mb-4"  />
+                <x-form.input id="recipient_name" label="Recipient Name:" class="mb-4" x-model="recipient_name"/>
+                <x-form.input id="address_line_1" label="Address Line 1:" class="mb-4" x-model="address_line_1"/>
+                <x-form.input id="address_line_2" label="Address Line 2:" class="mb-4" :required="false" x-model="address_line_2"/>
+                <x-form.input id="city" label="City:" class="mb-4" x-model="city"/>
+                <x-form.input id="state" label="State:" class="mb-4" x-model="state"/>
+                <x-form.input id="postal_code" label="Postal Code:" class="mb-4" x-model="postal_code"/>
+                <x-form.input id="country" label="Country:" class="mb-4" x-model="country"/>
+                <x-form.input id="phone_number" label="Phone Number:" class="mb-4" x-model="phone_number"/>
                 <x-form.input id="remember_address" label="Remember this address for future use:" type="slot"
                               class="mb-4">
                     <div class="flex h-full flex-col justify-center">
                         <input type="checkbox" id="remember_address" name="remember_address"
-                               class="checkbox self-start"/>
+                               class="checkbox self-start" x-model="remember_address"/>
                     </div>
                 </x-form.input>
             </div>
