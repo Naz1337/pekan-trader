@@ -94,9 +94,11 @@ class CatalogueController extends Controller
             return redirect()->route('cart.show')->with('toast', ['type' => 'info', 'message' => 'Your cart is empty.']);
         }
 
+        // Validate form input
         $request->validate([
             'payment_method' => 'required|in:bank_transfer',
             'address_selector' => 'required|string',
+            'recipient_name' => 'required_if:address_selector,new_address|string|max:255',
             'address_line_1' => 'required_if:address_selector,new_address|string|max:255',
             'city' => 'required_if:address_selector,new_address|string|max:255',
             'state' => 'required_if:address_selector,new_address|string|max:255',
@@ -105,10 +107,11 @@ class CatalogueController extends Controller
             'phone_number' => 'required_if:address_selector,new_address|string|max:20',
         ]);
 
+        // Retrieve selected address
         $address = null;
+        $addressSelector = $request->input('address_selector');
 
-        if ($request->input('address_selector') === 'new_address') {
-            // Create a new address
+        if ($addressSelector === 'new_address') {
             $address = $user->addresses()->create([
                 'recipient_name' => $request->input('recipient_name'),
                 'address_line_1' => $request->input('address_line_1'),
@@ -118,11 +121,11 @@ class CatalogueController extends Controller
                 'postal_code' => $request->input('postal_code'),
                 'country' => $request->input('country'),
                 'phone_number' => $request->input('phone_number'),
-                'is_default' => $request->has('remember_address'), // Set to true if 'remember_address' is checked
+                'is_default' => $request->has('remember_address'),
             ]);
         } else {
-            // Use the selected existing address
-            $address = $user->addresses()->find($request->input('address_selector'));
+            // Ensure the selected address belongs to the user
+            $address = $user->addresses()->find($addressSelector);
 
             if (!$address) {
                 return redirect()->route('checkout.show')->with('toast', [
@@ -132,9 +135,7 @@ class CatalogueController extends Controller
             }
         }
 
-        $groupedProducts = $user->cart->products->groupBy('seller_id');
-
-        // 1. Check stock for all products
+        // Check stock for all products
         foreach ($user->cart->products as $product) {
             if ($product->stock_quantity < $product->pivot->quantity) {
                 return redirect()->route('cart.show')->with('toast', [
@@ -144,7 +145,12 @@ class CatalogueController extends Controller
             }
         }
 
-        // 2. Place orders and allocate stock
+        // Group products by seller
+        $groupedProducts = $user->cart->products->groupBy('seller_id');
+
+        // Place orders and allocate stock
+        $order = null;
+
         foreach ($groupedProducts as $sellerId => $products) {
             $order = $user->orders()->create([
                 'seller_id' => $sellerId,
@@ -154,7 +160,6 @@ class CatalogueController extends Controller
             ]);
 
             foreach ($products as $product) {
-                // Decrement stock
                 $product->decrement('stock_quantity', $product->pivot->quantity);
 
                 $order->items()->create([
