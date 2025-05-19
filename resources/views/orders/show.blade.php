@@ -23,7 +23,7 @@
 
             @if ($order->status === 'delivering' && $order->tracking_id)
                 <div class="mb-2">
-                    <span class="font-semibold">Tracking Address:</span> {{ $order->tracking_id }}
+                    <span class="font-semibold">Tracking ID:</span> {{ $order->tracking_id }}
                 </div>
             @endif
 
