@@ -23,11 +23,12 @@ class CatalogueController extends Controller
     public function add_to_cart(Request $request, Product $product)
     {
         $user = $request->user();
-        if (!$user->has('cart')) {
-            $cart = new Cart;
+        $cart = $user->cart()->first();
 
-            $user->cart()->associate($cart);
-            $user->save();
+        if (!$cart) {
+            $cart = new Cart;
+            $cart->user_id = $user->id; // Set the foreign key manually
+            $cart->save();
         }
 
         $existingProduct = $user->cart->products()->wherePivot('product_id', $product->id)->first();

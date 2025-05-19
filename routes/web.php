@@ -89,7 +89,8 @@ Route::controller(CatalogueController::class)->group(function () {
     Route::prefix('products')->group(function () {
        Route::get('/{product}', 'show')->name('catalogue.show');
 
-       Route::post('/{product}/add_to_cart', 'add_to_cart')->name('catalogue.add_to_cart');
+       Route::post('/{product}/add_to_cart', 'add_to_cart')->name('catalogue.add_to_cart')
+           ->middleware('auth');
     });
 
     Route::middleware('auth')->group(function () {
