@@ -8,17 +8,25 @@
                     <span class="text-base-content">{{ $order->id }}</span>
                 </div>
                 <div class="text-base-content/60 mb-1">
-                    RM <span class="text-primary font-semibold">{{ number_format($order->total_amount, 2) }}</span>
+                    RM <span class="text-primary">{{ number_format($order->total_amount, 2) }}</span>
                 </div>
                 <div class="text-sm text-base-content/60 mb-8">
                     <span class="text-base-content font-semibold">{{ $order->items->count() }}</span> product types
                 </div>
                 <div class="text-sm flex items-center justify-between">
                     <div class="flex items-center gap-2">
-                        <span class="badge {{ $order->status === 'completed' ? 'badge-success' : 'badge-warning' }}">
-                            {{ ucfirst(str_replace('_', ' ', $order->status)) }}
-                        </span>
-                        <span class="badge {{ $order->payment_status === 'paid' ? 'badge-success' : 'badge-error' }}">
+                        <span class="badge
+                        {{ $order->status === 'canceled' ? 'badge-error' :
+                           ($order->status === 'pending' ? 'badge-warning' :
+                           ($order->status === 'packing' ? 'badge-info' :
+                           ($order->status === 'delivering' ? 'badge-primary' :
+                           ($order->status === 'completed' ? 'badge-success' : 'badge-secondary')))) }}">
+                        {{ ucfirst(str_replace('_', ' ', $order->status)) }}
+                    </span>
+                        <span class="badge
+                            {{ $order->payment_status === 'paid' ? 'badge-success' :
+                               ($order->payment_status === 'unpaid' ? 'badge-error' :
+                               ($order->payment_status === 'reupload_required' ? 'badge-warning' : 'badge-secondary')) }}">
                             {{ ucfirst(str_replace('_', ' ', $order->payment_status)) }}
                         </span>
                     </div>

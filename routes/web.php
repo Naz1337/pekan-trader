@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\OrderPaymentController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
 
@@ -60,6 +61,19 @@ Route::middleware('auth.seller')->group(function () {
 
                 Route::get('/{order}', 'seller_show')->name('seller.orders.show');
 
+                Route::patch('/{order}/cancel', 'cancel')->name('seller.orders.cancel');
+
+                Route::patch('/{order}/set_delivering', 'setDelivering')->name(
+                    'seller.orders.setDelivering'
+                );
+
+            });
+        });
+
+        Route::controller(OrderPaymentController::class)->group(function () {
+            Route::prefix('order_payments')->group(function() {
+                Route::patch('/accept/{orderPayment}', 'accept')->name('seller.order_payments.accept');
+                Route::patch('/reject/{orderPayment}', 'reject')->name('seller.order_payments.reject');
             });
         });
 
@@ -91,5 +105,7 @@ Route::controller(OrderController::class)->group(function () {
         Route::get('/', 'index')->name('orders.index');
         Route::get('/{order}', 'show')->name('orders.show');
         Route::post('/{order}/pay', 'pay')->name('order.pay');
+
+        Route::patch('/{order}/set_received', 'setReceived')->name('orders.setReceived');
     });
 });

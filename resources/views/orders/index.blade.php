@@ -8,8 +8,13 @@
                         <span class="font-semibold">Order #{{ $order->id }}</span>
                         <span class="ml-2 text-sm text-base-content/60">Seller: {{ $order->seller->business_name ?? 'N/A' }}</span>
                     </div>
-                    <span class="badge {{ $order->payment_status === 'unpaid' ? 'badge-error' : 'badge-success' }}">
-                        {{ ucwords(str_replace('_', ' ', $order->payment_status)) }}
+                    <span class="badge
+                        {{ $order->status === 'canceled' ? 'badge-error' :
+                           ($order->status === 'pending' ? 'badge-warning' :
+                           ($order->status === 'packing' ? 'badge-info' :
+                           ($order->status === 'delivering' ? 'badge-primary' :
+                           ($order->status === 'completed' ? 'badge-success' : 'badge-secondary')))) }}">
+                        {{ ucwords(str_replace('_', ' ', $order->status)) }}
                     </span>
                 </div>
                 <div class="mb-2">

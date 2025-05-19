@@ -31,11 +31,6 @@ class Order extends Model
         return $this->belongsTo(Seller::class);
     }
 
-    public function order_payment(): HasOne
-    {
-        return $this->hasOne(OrderPayment::class);
-    }
-
     public function order_histories(): HasMany
     {
         return $this->hasMany(OrderHistory::class);
@@ -44,5 +39,10 @@ class Order extends Model
     public function address(): BelongsTo
     {
         return $this->belongsTo(Address::class);
+    }
+
+    public function order_payments(): HasMany
+    {
+        return $this->hasMany(OrderPayment::class)->orderBy('created_at', 'desc');
     }
 }
