@@ -11,7 +11,12 @@ class OrderController extends Controller
     public function show(Request $request, Order $order)
     {
 
-        // todo check policy for user and order
+        if ($order->user_id !== $request->user()->id) {
+            return redirect()->route('orders.index')->with('toast', [
+                'type' => 'error',
+                'message' => 'Unauthorized action.'
+            ]);
+        }
         return view('orders.show', compact('order'));
     }
 

@@ -9,10 +9,18 @@ use Illuminate\Http\Request;
 
 class CatalogueController extends Controller
 {
-    function home(Request $request)
+    public function home(Request $request)
     {
-        $products = Product::all();
-        return view('welcome', compact('products'));
+        $query = $request->input('query');
+
+        if (!$query) {
+            $products = Product::all();
+            return view('welcome', compact('products'));
+        }
+
+        $products = Product::where('name', 'LIKE', '%' . $query . '%')->get();
+
+        return view('catalogue.search-result', compact('products'));
     }
 
     function show(Product $product)
