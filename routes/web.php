@@ -101,12 +101,15 @@ Route::controller(CatalogueController::class)->group(function () {
     });
 });
 
-Route::controller(OrderController::class)->group(function () {
-    Route::prefix('orders')->group(function () {
-        Route::get('/', 'index')->name('orders.index');
-        Route::get('/{order}', 'show')->name('orders.show');
-        Route::post('/{order}/pay', 'pay')->name('order.pay');
+Route::middleware('auth')->group(function () {
+    Route::controller(OrderController::class)->group(function () {
+        Route::prefix('orders')->group(function () {
+            Route::get('/', 'index')->name('orders.index');
+            Route::get('/{order}', 'show')->name('orders.show');
+            Route::post('/{order}/pay', 'pay')->name('order.pay');
 
-        Route::patch('/{order}/set_received', 'setReceived')->name('orders.setReceived');
+            Route::patch('/{order}/set_received', 'setReceived')->name('orders.setReceived');
+        });
     });
 });
+
