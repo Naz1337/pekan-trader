@@ -38,11 +38,14 @@ class ProductController extends Controller
             'stock_quantity' => 'required|integer|min:0',
             'product_image' => 'required|file|image|max:10240',
             'delivery_fee' => 'required|decimal:2|min:0',
-            'is_published' => 'nullable|accepted'
         ];
 
 //        $validated = $request->validate($rules);
         $validator = Validator::make($request->all(), $rules);
+
+        $validator->sometimes('is_published', 'accepted', function ($input) {
+            return $input->has('is_published');
+        });
 
         if ($validator->fails()) {
             $errors = $validator->errors();
