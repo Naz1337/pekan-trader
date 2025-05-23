@@ -137,7 +137,7 @@
             @else
                 <ul class="flex flex-col gap-4">
                     @foreach ($order->order_histories as $history)
-                        <li class="p-4 bg-base-300 rounded-box">
+                        <li class="p-4 {{ $loop->first ? 'bg-base-300' : 'bg-base-300/50' }}  rounded-box {{ $loop->first ? 'shadow-sm' : '' }}">
                             <div class="text-lg font-semibold">{{ $history->message }}</div>
                             <div class="text-sm text-base-content/60">
                                 {{ $history->created_at->format('F j, Y, g:i A') }}
