@@ -33,7 +33,7 @@ class Order extends Model
 
     public function order_histories(): HasMany
     {
-        return $this->hasMany(OrderHistory::class);
+        return $this->hasMany(OrderHistory::class)->orderBy('created_at', 'desc');
     }
 
     public function address(): BelongsTo
