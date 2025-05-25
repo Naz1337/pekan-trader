@@ -65,37 +65,38 @@
                    ">
         </x-form.input>
 
-        <div x-data="{ showImage: false }" style="display: contents"
-            x-init="$nextTick(() => {
-                const id = `#product_image`
-                const fileInputEl = $el.querySelector(id)
-                fileInputEl.addEventListener('change', (ev) => {
-                    const files = ev.target.files;
-                    const file = files[0];
-
-                    if (file) {
-                        const reader = new FileReader();
-
-                        reader.onload = function(e) {
-                            $refs.productImagePreview.src = e.target.result
-
-                            showImage = true;
-                        }
-
-                        reader.readAsDataURL(file);
-                    }
-                    else {
-                        $refs.productImagePreview.src = ''
-                        showImage = false;
-                    }
-                })
-            });">
-            <x-form.input id="product_image" label="Product Image:" type="file" :required="false" accept="image/*"/>
+        <div x-data="{
+            images: [], // To store { id: uniqueId, file: File, previewUrl: '' }
+            handleFiles(event) {
+                const newFiles = Array.from(event.target.files);
+                newFiles.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.images.push({
+                            id: Date.now() + Math.random(), // unique id for key
+                            file: file,
+                            previewUrl: e.target.result
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            },
+            removeImage(id) {
+                this.images = this.images.filter(img => img.id !== id);
+            }
+        }">
+            <label for="product_images" class="basis-[200px] text-base-content/60 mt-2">Product Images:</label>
+            <input type="file" id="product_images" name="product_images[]" multiple accept="image/*" @@change="handleFiles($event)" class="file-input file-input-bordered w-full max-w-xs" />
             <div class="flex">
                 <div class="basis-[200px]"></div>
-                <img src="" alt="" x-ref="productImagePreview"
-                     class="max-h-[240px] max-w-[312px] rounded-box shadow-sm bg-base-100"
-                     ::class="!showImage && 'hidden'">
+                <div class="grid grid-cols-3 gap-4 mt-4">
+                    <template x-for="image in images" :key="image.id">
+                        <div class="relative">
+                            <img :src="image.previewUrl" class="rounded shadow object-cover h-32 w-full">
+                            <button @@click.prevent="removeImage(image.id)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs">X</button>
+                        </div>
+                    </template>
+                </div>
             </div>
         </div>
 

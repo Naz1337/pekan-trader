@@ -1,48 +1,54 @@
 <x-layout.seller title="Editing Product Details">
     <form action="{{ route('seller.products.update', compact('product')) }}" method="post"
           enctype="multipart/form-data" style="display: contents;">
-        <div x-data="{originalImage: null, showReset: false}" class="mb-8"
-             x-init="$nextTick(() => {originalImage = $refs.productImage.src;}); ">
-            <input type="file" name="product_image" class="hidden" x-ref="fileInputEl" accept="image/*"
-                   @@change="
-                const files = $event.target.files;
+        <div x-data="{
+            newImages: [], // To store { id: uniqueId, file: File, previewUrl: '' }
+            handleFiles(event) {
+                const files = Array.from(event.target.files);
+                files.forEach(file => {
+                    const reader = new FileReader();
+                    reader.onload = (e) => {
+                        this.newImages.push({
+                            id: Date.now() + Math.random(), // unique id for key
+                            file: file,
+                            previewUrl: e.target.result
+                        });
+                    };
+                    reader.readAsDataURL(file);
+                });
+            },
+            removeNewImage(id) {
+                this.newImages = this.newImages.filter(img => img.id !== id);
+            }
+        }" class="mb-8">
+            <div class="text-base-content/40 mb-2">Current Product Images</div>
+            <div class="grid grid-cols-3 gap-4 mb-4">
+                @forelse($product->images as $image)
+                    <div class="relative">
+                        <img src="{{ Storage::url($image->image_path) }}" alt="Product Image" class="rounded shadow object-cover h-32 w-full">
+                        @if($image->is_thumbnail)
+                            <span class="absolute top-1 left-1 badge badge-primary">Thumbnail</span>
+                        @endif
+                        {{-- For now, no direct deletion of existing images from here. New uploads will replace. --}}
+                    </div>
+                @empty
+                    <p>No images currently uploaded for this product.</p>
+                @endforelse
+            </div>
 
-                if (files[0]) {
-                    const file = files[0];
-
-                    const fileReader = new FileReader();
-
-                    fileReader.onload = (e) => {
-                        $refs.productImage.src = e.target.result;
-                    }
-
-                    fileReader.readAsDataURL(file)
-
-                    showReset = true;
-                }
-                else {
-                    $refs.productImage.src = originalImage
-                }
-            ">
-            <div class="relative rounded-box shadow-md w-fit overflow-hidden hover:shadow-xl transition-shadow mb-4">
-                <img src="{{ Storage::url($product->image_path) }}" alt=""
-                     class="max-w-120 max-h-70" x-ref="productImage">
-                <div class="absolute top-0 left-0 w-full h-full hover:backdrop-blur-sm transition-[backdrop-filter] group">
-                    <button class="w-full h-full text-base-100 text-4xl text-shadow-lg btn bg-transparent
-                transition-opacity opacity-0 group-hover:opacity-100" @@click.prevent="
-                $refs.fileInputEl.click();
-                ">Edit Image</button>
+            <label for="product_images" class="basis-[200px] text-base-content/60 mt-2">Upload New Images (will replace existing):</label>
+            <input type="file" id="product_images" name="product_images[]" multiple accept="image/*" @@change="handleFiles($event)" class="file-input file-input-bordered w-full max-w-xs" />
+            <div class="flex">
+                <div class="basis-[200px]"></div>
+                <div class="grid grid-cols-3 gap-4 mt-4">
+                    <template x-for="image in newImages" :key="image.id">
+                        <div class="relative">
+                            <img :src="image.previewUrl" class="rounded shadow object-cover h-32 w-full">
+                            <button @@click.prevent="removeNewImage(image.id)" class="absolute top-1 right-1 bg-red-500 text-white rounded-full p-1 text-xs">X</button>
+                        </div>
+                    </template>
                 </div>
             </div>
-            <button class="btn btn-soft btn-secondary" @@click="
-            $event.preventDefault();
-
-            $refs.productImage.src = originalImage;
-            $refs.fileInputEl.value = '';
-
-            showReset = false;
-
-        " x-show="showReset" x-cloak>Reset Image</button>
         </div>
 
         <div class="flex justify-between max-w-150 items-center">

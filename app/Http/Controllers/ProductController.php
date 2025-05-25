@@ -36,7 +36,8 @@ class ProductController extends Controller
             'product_description' => 'nullable|string|max:1000',
             'product_price' => 'required|decimal:2|min:0',
             'stock_quantity' => 'required|integer|min:0',
-            'product_image' => 'required|file|image|max:10240',
+            'product_images' => 'required|array|min:1',
+            'product_images.*' => 'file|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'delivery_fee' => 'required|decimal:2|min:0',
         ];
 
@@ -62,19 +63,35 @@ class ProductController extends Controller
         if (!array_key_exists('is_published', $validated))
             $validated['is_published'] = false;
 
-        //store the image
-        $product_image_path = $validated['product_image']->store('product_images', 'public');
-
         $new_product = new Product;
         $new_product->name = $validated['product_name'];
         $new_product->description = $validated['product_description'] ?? "";
         $new_product->price = $validated['product_price'];
         $new_product->stock_quantity = $validated['stock_quantity'];
-        $new_product->image_path = $product_image_path;
         $new_product->delivery_fee = $validated['delivery_fee'];
         $new_product->is_published = $validated['is_published'] === 'on';
 
         $request->user()->seller->products()->save($new_product);
+
+        // Store multiple images
+        $is_first_image = true;
+        $order = 1;
+        foreach ($validated['product_images'] as $imageFile) {
+            $imagePath = $imageFile->store('product_images/' . $new_product->id, 'public');
+
+            $new_product->images()->create([
+                'image_path' => $imagePath,
+                'is_thumbnail' => $is_first_image,
+                'order' => $order,
+            ]);
+
+            if ($is_first_image) {
+                $new_product->image_path = $imagePath; // For backward compatibility
+                $is_first_image = false;
+            }
+            $order++;
+        }
+        $new_product->save(); // Save product again to update image_path
 
         return redirect()->route('seller.products.index')->with('success', 'Successfully created a new product!');
 
@@ -121,7 +138,8 @@ class ProductController extends Controller
             'product_description' => 'nullable|string|max:1000',
             'product_price' => 'decimal:2|min:0',
             'stock_quantity' => 'integer|min:0',
-            'product_image' => 'nullable|file|image|max:10240',
+            'product_images' => 'nullable|array',
+            'product_images.*' => 'file|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'delivery_fee' => 'decimal:2|min:0'
         ];
 
@@ -146,13 +164,35 @@ class ProductController extends Controller
         }
 
         $product->price = $validated['product_price'] ?? $product->price;
-
-        if ($request->hasFile('product_image')) {
-            $image_path = $validated['product_image']->store('product_images', 'public');
-            $product->image_path = $image_path;
-        }
-
         $product->stock_quantity = $validated['stock_quantity'] ?? $product->stock_quantity;
+
+        // Handle multiple images update
+        if ($request->hasFile('product_images')) {
+            // Delete existing product images and their files
+            foreach ($product->images as $image) {
+                \Illuminate\Support\Facades\Storage::disk('public')->delete($image->image_path);
+                $image->delete();
+            }
+
+            // Store new images
+            $is_first_image = true;
+            $order = 1;
+            foreach ($validated['product_images'] as $imageFile) {
+                $imagePath = $imageFile->store('product_images/' . $product->id, 'public');
+
+                $product->images()->create([
+                    'image_path' => $imagePath,
+                    'is_thumbnail' => $is_first_image,
+                    'order' => $order,
+                ]);
+
+                if ($is_first_image) {
+                    $product->image_path = $imagePath; // For backward compatibility
+                    $is_first_image = false;
+                }
+                $order++;
+            }
+        }
 
         $product->delivery_fee = $validated['delivery_fee'] ?? $product->delivery_fee;
 
