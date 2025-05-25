@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        // Create the product_images table
+        // First, create the product_images table
         Schema::create('product_images', function (Blueprint $table) {
             $table->id();
             $table->foreignId('product_id')->constrained()->onDelete('cascade');
@@ -20,6 +20,11 @@ return new class extends Migration
             $table->integer('order')->nullable();
             $table->timestamps();
         });
+
+        // Then, remove the image column from products table
+        Schema::table('products', function (Blueprint $table) {
+            $table->dropColumn('image');
+        });
     }
 
     /**
@@ -27,7 +32,12 @@ return new class extends Migration
      */
     public function down(): void
     {
-        // Drop the product_images table
+        // First, re-add the image column to products
+        Schema::table('products', function (Blueprint $table) {
+            $table->string('image')->after('description'); // Assuming description is the column before where image was
+        });
+
+        // Then, drop the product_images table
         Schema::dropIfExists('product_images');
     }
 };
