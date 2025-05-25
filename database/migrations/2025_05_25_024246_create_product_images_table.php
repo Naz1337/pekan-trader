@@ -3,6 +3,7 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use App\Models\Product; // Import the Product model
 
 return new class extends Migration
 {
@@ -13,6 +14,10 @@ return new class extends Migration
     {
         Schema::create('product_images', function (Blueprint $table) {
             $table->id();
+            $table->foreignIdFor(Product::class)->constrained()->onDelete('cascade');
+            $table->string('image_path');
+            $table->boolean('is_thumbnail')->default(false);
+            $table->integer('order')->nullable();
             $table->timestamps();
         });
     }
