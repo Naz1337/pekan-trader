@@ -101,65 +101,54 @@
             @endif
         </div>
 
-        @if ($order->order_payments->first() && $order->order_payments->first()->status === 'rejected')
-            <div class="w-full mb-6 p-4 bg-base-200 rounded-box">
-                <h2 class="text-xl font-bold mb-4">Upload New Payment Receipt</h2>
-                <p class="mb-4 text-base-content/60">Your previous payment receipt was rejected. Please upload a new receipt to proceed with the order.</p>
-                <form action="{{ route('order.pay', $order->id) }}" method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
-                    @csrf
-                    <div>
-                        <label class="font-semibold mb-2 block">Upload Bank Transfer Receipt</label>
-                        <input type="file" name="receipt" accept="image/*,application/pdf" class="file-input file-input-bordered w-full" required>
-                        @error('receipt')
-                        <div class="text-error text-sm mt-1">{{ $message }}</div>
-                        @enderror
-                    </div>
-                    <input type="hidden" value="{{ $order->payment_method }}" name="method">
-                    <button type="submit" class="btn btn-primary w-full">Submit Payment</button>
-                </form>
-            </div>
-        @endif
+            @if ($order->payment_status === 'unpaid' || $order->payment_status === 'reupload_required')
+                <div class="w-full mb-6 p-4 bg-base-200 rounded-box">
+                    @if ($order->payment_status === 'reupload_required')
+                        <h2 class="text-xl font-bold mb-4">Upload New Payment Receipt</h2>
+                        <p class="mb-4 text-base-content/60">Your previous payment receipt was rejected. Please upload a new receipt to proceed with the order.</p>
+                    @else {{-- unpaid --}}
+                        <h2 class="text-xl font-bold mb-4">Bank Transfer Payment</h2>
+                    @endif
 
-        @if ($order->payment_status === 'unpaid')
-            <div class="w-full mb-6 p-4 bg-base-200 rounded-box">
-                <h2 class="text-xl font-bold mb-4">Bank Transfer Payment</h2>
-                <div class="mb-4">
-                    <span class="font-semibold">Total Amount to Pay:</span> RM {{ number_format($order->total_amount, 2) }}
-                </div>
-                <div class="mb-4">
-                    <div class="font-semibold">Bank Name:</div>
-                    <div>{{ $order->seller->bank_name }}</div>
-                </div>
-                <div class="mb-4">
-                    <div class="font-semibold">Account Number:</div>
-                    <div>{{ $order->seller->bank_account_number }}</div>
-                </div>
-                <div class="mb-4">
-                    <div class="font-semibold">Account Holder:</div>
-                    <div>{{ $order->seller->bank_account_name }}</div>
-                </div>
-                <form action="{{ route('order.pay', $order->id) }}" method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
-                    @csrf
-                    <div>
-                        <label class="font-semibold mb-2 block">Upload Bank Transfer Receipt</label>
-                        <input type="file" name="receipt" accept="image/*,application/pdf" class="file-input file-input-bordered w-full" required>
-                        @error('receipt')
-                        <div class="text-error text-sm mt-1">{{ $message }}</div>
-                        @enderror
+                    {{-- Bank Details --}}
+                    <div class="mb-4">
+                        <span class="font-semibold">Total Amount to Pay:</span> RM {{ number_format($order->total_amount, 2) }}
                     </div>
-                    <input type="hidden" value="{{ $order->payment_method }}" name="method">
-                    <button type="submit" class="btn btn-primary w-full">Submit Payment</button>
-                </form>
-            </div>
-        @else
-            @if ($order->order_payment && $order->order_payment->receipt_path)
+                    <div class="mb-4">
+                        <div class="font-semibold">Bank Name:</div>
+                        <div>{{ $order->seller->bank_name }}</div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="font-semibold">Account Number:</div>
+                        <div>{{ $order->seller->bank_account_number }}</div>
+                    </div>
+                    <div class="mb-4">
+                        <div class="font-semibold">Account Holder:</div>
+                        <div>{{ $order->seller->bank_account_name }}</div>
+                    </div>
+
+                    {{-- Upload Form --}}
+                    <form action="{{ route('order.pay', $order->id) }}" method="post" enctype="multipart/form-data" class="flex flex-col gap-4">
+                        @csrf
+                        <div>
+                            <label class="font-semibold mb-2 block">Upload Bank Transfer Receipt</label>
+                            <input type="file" name="receipt" accept="image/*,application/pdf" class="file-input file-input-bordered w-full" required>
+                            @error('receipt')
+                            <div class="text-error text-sm mt-1">{{ $message }}</div>
+                            @enderror
+                        </div>
+                        <input type="hidden" value="{{ $order->payment_method }}" name="method">
+                        <button type="submit" class="btn btn-primary w-full">Submit Payment</button>
+                    </form>
+                </div>
+            @elseif (($order->payment_status === 'in_payment' || $order->payment_status === 'paid') && $order->order_payments->isNotEmpty() && $order->order_payments->first()->receipt_path)
+                {{-- Show Download Receipt for in_payment or paid status if receipt exists --}}
                 <div class="w-full mb-6 p-4 bg-base-200 rounded-box">
                     <h2 class="text-xl font-bold mb-4">Payment Receipt</h2>
-                    <a href="{{ Storage::url($order->order_payment->receipt_path) }}" class="btn btn-secondary" download>
+                    <a href="{{ Storage::url($order->order_payments->first()->receipt_path) }}" class="btn btn-secondary" download>
                         Download Receipt
                     </a>
                 </div>
             @endif
-        @endif
     </div>
 </x-layout.main>
