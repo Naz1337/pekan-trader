@@ -42,7 +42,7 @@
         <form action="{{ route('order.place') }}" method="post" class="w-full">
             @csrf
             <div x-data="{
-    selectedAddressId: 'new_address',
+    selectedAddressId: '{{ $defaultAddressId ?? 'new_address' }}',
     addresses: {{ Js::from($addresses->keyBy('id')) }},
     recipient_name: '{{ addslashes(request()->user()->name) }}',
     address_line_1: '',
@@ -54,6 +54,9 @@
     phone_number: '',
     remember_address: true,
     isNewAddress: true,
+    init() {
+        this.updateFormFields();
+    },
     updateFormFields() {
         this.isNewAddress = (this.selectedAddressId === 'new_address');
         if (this.isNewAddress) {
@@ -88,7 +91,7 @@
                 <label for="address_selector" class="block font-medium mb-2 label">Select an Address:</label>
                 <select id="address_selector" name="address_selector" class="select w-full mb-8"
                         x-model="selectedAddressId"
-                        @@change="updateFormFields()"> {{-- Moved @@change here --}}
+                        @@change="updateFormFields()">
                     <option value="new_address">Create new Address</option>
                     @foreach ($addresses as $address)
                         <option value="{{ $address->id }}">

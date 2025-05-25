@@ -91,8 +91,9 @@ class CatalogueController extends Controller
         });
 
         $addresses = $user->addresses; // Retrieve the user's addresses
+        $defaultAddressId = $user->addresses()->where('is_default', true)->value('id'); // Get the ID of the default address
 
-        return view('checkout.show', compact('groupedProducts', 'addresses'));
+        return view('checkout.show', compact('groupedProducts', 'addresses', 'defaultAddressId'));
     }
 
     public function place_order(Request $request)
