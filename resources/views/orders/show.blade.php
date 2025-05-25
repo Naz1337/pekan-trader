@@ -124,6 +124,9 @@
             <div class="w-full mb-6 p-4 bg-base-200 rounded-box">
                 <h2 class="text-xl font-bold mb-4">Bank Transfer Payment</h2>
                 <div class="mb-4">
+                    <span class="font-semibold">Total Amount to Pay:</span> RM {{ number_format($order->total_amount, 2) }}
+                </div>
+                <div class="mb-4">
                     <div class="font-semibold">Bank Name:</div>
                     <div>{{ $order->seller->bank_name }}</div>
                 </div>
