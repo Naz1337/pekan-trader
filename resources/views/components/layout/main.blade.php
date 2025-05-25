@@ -46,6 +46,16 @@
                         >Merchant Dashboard</a>
                 @endif
 
+                {{-- Search Bar --}}
+                <form class="flex" method="get" action="{{ route('home') }}"> {{-- Submits to homepage, adjust if you have a specific search route --}}
+                    <label for="header-search" class="input input-bordered input-md flex items-center gap-2 rounded-lg">
+                        <input type="text" name="query" id="header-search" class="grow focus:outline-none" placeholder="Search products...">
+                        <button class="btn btn-ghost btn-sm p-1" type="submit">
+                            <x-icon.search class="h-5 w-5" />
+                        </button>
+                    </label>
+                </form>
+
                 @if ($is_logged_in)
                     <a href="{{ route('cart.show') }}" class="btn btn-ghost">Cart</a>
 
