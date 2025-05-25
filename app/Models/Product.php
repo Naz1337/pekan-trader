@@ -137,4 +137,50 @@ class Product extends Model
 
         return $this->images()->ordered()->first();
     }
+
+    /**
+     * Get all attributes for this product.
+     */
+    public function attributes(): HasMany
+    {
+        return $this->hasMany(ProductAttribute::class);
+    }
+
+    /**
+     * Get all attribute keys that this product has values for.
+     */
+    public function attributeKeys(): BelongsToMany
+    {
+        return $this->belongsToMany(ProductAttributeKey::class, 'product_attributes', 'product_id', 'attribute_key_id')
+                    ->withPivot('value')
+                    ->withTimestamps();
+    }
+
+    /**
+     * Get a specific product attribute value by key name.
+     */
+    public function getProductAttributeValue(string $keyName): ?string
+    {
+        $attribute = $this->attributes()
+                          ->whereHas('attributeKey', function ($query) use ($keyName) {
+                              $query->where('name', $keyName);
+                          })
+                          ->first();
+
+        return $attribute ? $attribute->value : null;
+    }
+
+    /**
+     * Get formatted attributes as key-value pairs.
+     */
+    public function getFormattedAttributesAttribute(): array
+    {
+        return $this->attributes()
+                    ->with('attributeKey')
+                    ->get()
+                    ->mapWithKeys(function ($attribute) {
+                        return [$attribute->attributeKey->display_name => $attribute->formatted_value];
+                    })
+                    ->toArray();
+    }
 }
