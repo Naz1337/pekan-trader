@@ -21,7 +21,7 @@
                 </form>
             @endif
 
-            @if ($order->status === 'delivering' && $order->tracking_id)
+            @if ($order->tracking_id)
                 <div class="mb-2">
                     <span class="font-semibold">Tracking ID:</span> {{ $order->tracking_id }}
                 </div>
