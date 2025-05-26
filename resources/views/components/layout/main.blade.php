@@ -9,7 +9,7 @@
         <div class="container flex">
             <div class="flex-1">
                 <a class="btn btn-ghost text-accent-content btn-lg" href="{{ route('home') }}">
-                    Pekan Trader
+                    <img class="h-full" src="/imgs/logo.png" alt="Pekan Traders Logo">
                 </a>
             </div>
             <div class="flex-none flex gap-4 flex-row-reverse items-center">
@@ -43,7 +43,10 @@
                             'btn-ghost' => !str_starts_with(request()->path(), 'seller'),
                             'btn-soft btn-secondary' => str_starts_with(request()->path(), 'seller')
                         ])
-                        >Merchant Dashboard</a>
+                        >
+
+                            <x-icon.store class="size-[1.2em] fill-current" />
+                            Merchant Dashboard</a>
                 @endif
 
                 {{-- Search Bar --}}
@@ -57,9 +60,15 @@
                 </form>
 
                 @if ($is_logged_in)
-                    <a href="{{ route('cart.show') }}" class="btn btn-ghost">Cart</a>
+                    <a href="{{ route('cart.show') }}" class="btn btn-ghost">
+                        <x-icon.cart class="size-[1.2em] fill-primary-base-content"/>
+                        Cart
+                    </a>
 
-                    <a href="{{ route('orders.index') }}" class="btn btn-ghost">My Order</a>
+                    <a href="{{ route('orders.index') }}" class="btn btn-ghost">
+                        <x-icon.clipboard-list class="size-[1.2em] fill-primary-base-content"/>
+                        My Order
+                    </a>
                 @endif
             </div>
         </div>

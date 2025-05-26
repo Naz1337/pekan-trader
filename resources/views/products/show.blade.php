@@ -4,8 +4,36 @@
 
         <div class="flex items-start w-full">
             <div class="flex flex-col gap-16">
-                <img class="max-w-100 min-h-100 object-contain" src="{{ Storage::url($product->image_path) }}" />
-                <form class="p-6 bg-base-200 rounded-box"
+                <div x-data='{
+                        images: @json($product->all_image_urls),
+                        currentImage: @json($product->main_image_url),
+                        changeImage(newUrl) {
+                            this.currentImage = newUrl;
+                        }
+                    }'
+                     class="flex flex-col md:flex-row gap-4">
+
+                    {{-- Main Image Display --}}
+                    <div class="flex-grow">
+                        <img :src="currentImage" alt="{{ $product->name }} image" class="max-w-100 min-h-100 object-contain rounded-box">
+                    </div>
+
+                    {{-- Thumbnail Gallery --}}
+                    <template x-if="images.length > 1">
+                        <div class="flex flex-row md:flex-col gap-2 p-2 overflow-auto">
+                            <template x-for="(imageUrl, index) in images" :key="index">
+                                <img :src="imageUrl"
+                                     @click="changeImage(imageUrl)"
+                                     alt="Product thumbnail {{ '${index + 1}' }}"
+                                     class="w-20 h-20 md:w-24 md:h-24 object-cover rounded cursor-pointer border-2"
+                                     :class="{ 'border-primary': imageUrl === currentImage, 'border-transparent': imageUrl !== currentImage }"
+                                >
+                            </template>
+                        </div>
+                    </template>
+                </div>
+
+                <form class="p-6 bg-base-200 rounded-box mt-4"
                       action="{{ route('catalogue.add_to_cart', compact('product')) }}"
                       method="post">
 
