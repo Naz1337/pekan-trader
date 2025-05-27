@@ -3,8 +3,12 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductAttribute;
+use App\Models\ProductAttributeKey;
 use Illuminate\Http\Request;
+use App\Models\ProductCategory;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Str;
 
 class ProductController extends Controller
 {
@@ -22,7 +26,8 @@ class ProductController extends Controller
 
     public function create()
     {
-        return view('seller.products.create');
+        $productCategories = ProductCategory::all();
+        return view('seller.products.create', compact('productCategories'));
     }
 
     public function store(Request $request)
@@ -39,9 +44,9 @@ class ProductController extends Controller
             'product_images' => 'required|array|min:1',
             'product_images.*' => 'file|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
             'delivery_fee' => 'required|decimal:2|min:0',
+            'product_category_id' => 'required|exists:product_categories,id',
         ];
 
-//        $validated = $request->validate($rules);
         $validator = Validator::make($request->all(), $rules);
 
         $validator->sometimes('is_published', 'accepted', function ($input) {
@@ -70,6 +75,7 @@ class ProductController extends Controller
         $new_product->stock_quantity = $validated['stock_quantity'];
         $new_product->delivery_fee = $validated['delivery_fee'];
         $new_product->is_published = $validated['is_published'] === 'on';
+        $new_product->product_category_id = $validated['product_category_id'];
 
         $request->user()->seller->products()->save($new_product);
 
@@ -124,7 +130,10 @@ class ProductController extends Controller
             return redirect()->route('home');
         }
 
-        return view('seller.products.edit', compact('product'));
+        $product->load(['productAttributes.productAttributeKey', 'category']);
+        $productCategories = ProductCategory::all();
+
+        return view('seller.products.edit', compact('product', 'productCategories'));
     }
 
     public function update(Request $request, Product $product)
@@ -140,7 +149,12 @@ class ProductController extends Controller
             'stock_quantity' => 'integer|min:0',
             'product_images' => 'nullable|array',
             'product_images.*' => 'file|image|mimes:jpeg,png,jpg,gif,svg,webp|max:10240',
-            'delivery_fee' => 'decimal:2|min:0'
+            'delivery_fee' => 'decimal:2|min:0',
+            'product_category_id' => 'required|exists:product_categories,id',
+            'attributes' => 'nullable|array',
+            'attributes.*.id' => 'required|exists:product_attributes,id',
+            'attributes.*.value' => 'nullable|string|max:255',
+            'attributes.*.order_column' => 'required|integer|min:0',
         ];
 
         $validation = makeDevFormValidator($request->all(), $rules);
@@ -195,12 +209,79 @@ class ProductController extends Controller
         }
 
         $product->delivery_fee = $validated['delivery_fee'] ?? $product->delivery_fee;
-
         $product->is_published = $validated['is_published'] ?? false;
+        $product->product_category_id = $validated['product_category_id'];
 
         $product->save();
 
+        // Update product attributes
+        if (isset($validated['attributes'])) {
+            foreach ($validated['attributes'] as $attributeData) {
+                $productAttribute = $product->productAttributes->find($attributeData['id']);
+                if ($productAttribute) {
+                    $productAttribute->value = $attributeData['value'];
+                    $productAttribute->order_column = $attributeData['order_column'];
+                    $productAttribute->save();
+                }
+            }
+        }
+
         return redirect()->route('seller.products.show', compact('product'))
             ->with('toast', ['type' => 'success', 'message' => 'Successfully updated ' . $product->name . '.']);
+    }
+
+    public function storeAttribute(Request $request, Product $product)
+    {
+        if ($request->user()->cannot('update', $product)) {
+            return redirect()->route('home');
+        }
+
+        $rules = [
+            'attribute_type_name' => 'required|string|max:255',
+        ];
+
+        $validator = Validator::make($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator)->withInput();
+        }
+
+        $validated = $validator->validated();
+
+        $display_name = $validated['attribute_type_name'];
+        $key_name = Str::lower(Str::replace(' ', '_', $display_name));
+
+        $productAttributeKey = ProductAttributeKey::firstOrCreate(
+            ['key_name' => $key_name],
+            ['display_name' => $display_name]
+        );
+
+        // Determine the next order_column
+        $maxOrder = $product->productAttributes()->max('order_column');
+        $nextOrder = $maxOrder !== null ? $maxOrder + 1 : 0;
+
+        $product->productAttributes()->create([
+            'product_attribute_key_id' => $productAttributeKey->id,
+            'value' => null, // Or an empty string, as per requirement
+            'order_column' => $nextOrder,
+        ]);
+
+        return back()->with('success', 'Attribute type added successfully!');
+    }
+
+    public function destroyAttribute(Request $request, Product $product, ProductAttribute $attribute)
+    {
+        if ($request->user()->cannot('update', $product)) {
+            return redirect()->route('home');
+        }
+
+        // Ensure the attribute belongs to the product
+        if ($attribute->product_id !== $product->id) {
+            return back()->with('error', 'Attribute does not belong to this product.');
+        }
+
+        $attribute->delete();
+
+        return back()->with('success', 'Attribute deleted successfully!');
     }
 }

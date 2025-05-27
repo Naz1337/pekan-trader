@@ -52,6 +52,9 @@ Route::middleware('auth.seller')->group(function () {
                 Route::put('/{product}', 'update')->name('seller.products.update');
 
                 Route::delete('/{product}', 'destroy')->name('seller.products.destroy');
+
+                Route::post('/{product}/attributes', 'storeAttribute')->name('seller.products.attributes.store');
+                Route::delete('/{product}/attributes/{attribute}', 'destroyAttribute')->name('seller.products.attributes.destroy');
             });
         });
 
@@ -112,4 +115,3 @@ Route::middleware('auth')->group(function () {
         });
     });
 });
-

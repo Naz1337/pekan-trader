@@ -36,17 +36,7 @@ class ProductAttributeKey extends Model
      */
     public function productAttributes(): HasMany
     {
-        return $this->hasMany(ProductAttribute::class, 'attribute_key_id');
-    }
-
-    /**
-     * Get all products that have this attribute key.
-     */
-    public function products()
-    {
-        return $this->belongsToMany(Product::class, 'product_attributes', 'attribute_key_id', 'product_id')
-                    ->withPivot('value')
-                    ->withTimestamps();
+        return $this->hasMany(ProductAttribute::class, 'product_attribute_key_id');
     }
 
     /**

@@ -14,8 +14,9 @@ class ProductAttribute extends Model
      */
     protected $fillable = [
         'product_id',
-        'attribute_key_id',
+        'product_attribute_key_id',
         'value',
+        'order_column',
     ];
 
     /**
@@ -29,9 +30,9 @@ class ProductAttribute extends Model
     /**
      * Get the attribute key for this attribute.
      */
-    public function attributeKey(): BelongsTo
+    public function productAttributeKey(): BelongsTo
     {
-        return $this->belongsTo(ProductAttributeKey::class, 'attribute_key_id');
+        return $this->belongsTo(ProductAttributeKey::class, 'product_attribute_key_id');
     }
 
     /**
@@ -39,15 +40,15 @@ class ProductAttribute extends Model
      */
     public function getFormattedValueAttribute(): string
     {
-        $attributeKey = $this->attributeKey;
+        $productAttributeKey = $this->productAttributeKey;
 
-        if (!$attributeKey) {
+        if (!$productAttributeKey) {
             return $this->value;
         }
 
         $value = $this->value;
 
-        switch ($attributeKey->data_type) {
+        switch ($productAttributeKey->data_type) {
             case 'integer':
                 $formatted = number_format((int) $value);
                 break;
@@ -62,8 +63,8 @@ class ProductAttribute extends Model
         }
 
         // Add unit if available
-        if ($attributeKey->unit) {
-            $formatted .= ' ' . $attributeKey->unit;
+        if ($productAttributeKey->unit) {
+            $formatted .= ' ' . $productAttributeKey->unit;
         }
 
         return $formatted;
@@ -74,13 +75,13 @@ class ProductAttribute extends Model
      */
     public function getCastValueAttribute()
     {
-        $attributeKey = $this->attributeKey;
+        $productAttributeKey = $this->productAttributeKey;
 
-        if (!$attributeKey) {
+        if (!$productAttributeKey) {
             return $this->value;
         }
 
-        switch ($attributeKey->data_type) {
+        switch ($productAttributeKey->data_type) {
             case 'integer':
                 return (int) $this->value;
             case 'decimal':

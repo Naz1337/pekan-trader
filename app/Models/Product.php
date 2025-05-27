@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
-use App\Models\ProductCategory; // Add this line
 
 class Product extends Model
 {
@@ -143,19 +142,9 @@ class Product extends Model
     /**
      * Get all attributes for this product.
      */
-    public function attributes(): HasMany
+    public function productAttributes(): HasMany
     {
         return $this->hasMany(ProductAttribute::class);
-    }
-
-    /**
-     * Get all attribute keys that this product has values for.
-     */
-    public function attributeKeys(): BelongsToMany
-    {
-        return $this->belongsToMany(ProductAttributeKey::class, 'product_attributes', 'product_id', 'attribute_key_id')
-                    ->withPivot('value')
-                    ->withTimestamps();
     }
 
     /**
@@ -163,9 +152,9 @@ class Product extends Model
      */
     public function getProductAttributeValue(string $keyName): ?string
     {
-        $attribute = $this->attributes()
-                          ->whereHas('attributeKey', function ($query) use ($keyName) {
-                              $query->where('name', $keyName);
+        $attribute = $this->productAttributes()
+                          ->whereHas('productAttributeKey', function ($query) use ($keyName) {
+                              $query->where('key_name', $keyName);
                           })
                           ->first();
 
@@ -182,11 +171,11 @@ class Product extends Model
 
     public function getFormattedAttributesAttribute(): array
     {
-        return $this->attributes()
-                    ->with('attributeKey')
+        return $this->productAttributes()
+                    ->with('productAttributeKey')
                     ->get()
                     ->mapWithKeys(function ($attribute) {
-                        return [$attribute->attributeKey->display_name => $attribute->formatted_value];
+                        return [$attribute->productAttributeKey->display_name => $attribute->formatted_value];
                     })
                     ->toArray();
     }

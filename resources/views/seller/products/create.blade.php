@@ -4,6 +4,14 @@
         @csrf
         <div class="text-base-content/40">Basic Product Details</div>
 
+        <x-form.input id="product_category_id" label="Product Category:" type="slot">
+            <select name="product_category_id" id="product_category_id" class="select select-bordered w-full">
+                @foreach($productCategories as $category)
+                    <option value="{{ $category->id }}">{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </x-form.input>
+
         <x-form.input id="product_name" label="Product Name:" />
         <x-form.input id="product_description" label="Product Description:"
                       :textarea="true" class="min-h-32" :required="false"/>
@@ -147,6 +155,11 @@
         <div class="flex items-stretch mb-8">
             <label for="is_published" class="basis-[200px] flex items-center text-base-content/60">Make Product Public:</label>
             <input type="checkbox" name="is_published" id="is_published" class="toggle toggle-primary">
+        </div>
+
+        <div class="text-base-content/40 mt-8">Product Attributes</div>
+        <div class="text-sm text-base-content/60 mb-4">
+            Product attributes can only be added and managed after the product has been created. Please create the product first, then you can edit it to add attributes.
         </div>
 
         <div class="flex">

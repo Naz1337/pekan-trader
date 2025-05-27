@@ -61,6 +61,14 @@
             </div>
         </div>
 
+        <x-show.field label="Product Category">
+            <select name="product_category_id" id="product_category_id" class="select select-bordered w-full">
+                @foreach($productCategories as $category)
+                    <option value="{{ $category->id }}" @selected($product->product_category_id == $category->id)>{{ $category->name }}</option>
+                @endforeach
+            </select>
+        </x-show.field>
+
         <x-show.field label="Product Details">
         <textarea class="min-h-50 w-full textarea overflow-auto inset-shadow-2xs text-base-content/80"
                   name="product_description"
@@ -179,7 +187,55 @@
             </div>
         </x-show.field>
 
-        <div class="flex gap-4" x-data>
+        <div class="text-base-content/40 mt-8 mb-4">Product Attributes</div>
+
+        @if($product->productAttributes->isEmpty())
+            <p class="text-sm text-base-content/60 mb-4">This product has no attributes yet. Add an attribute type below to get started.</p>
+        @else
+            <div class="overflow-x-auto mb-4">
+                <table class="table w-full">
+                    <thead>
+                    <tr>
+                        <th>Attribute Name</th>
+                        <th>Value</th>
+                        <th>Order</th>
+                        <th>Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    @foreach($product->productAttributes->sortBy('order_column') as $attribute)
+                        <tr>
+                            <td>{{ $attribute->productAttributeKey->display_name }}</td>
+                            <td>
+                                <input type="text" name="attributes[{{ $attribute->id }}][value]" value="{{ $attribute->value }}" class="input input-bordered input-sm w-full max-w-xs">
+                            </td>
+                            <td>
+                                <input type="number" name="attributes[{{ $attribute->id }}][order_column]" value="{{ $attribute->order_column }}" class="input input-bordered input-sm w-20">
+                            </td>
+                            <td>
+                                <form action="{{ route('seller.products.attributes.destroy', ['product' => $product->id, 'attribute' => $attribute->id]) }}" method="post">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="btn btn-error btn-sm">Delete</button>
+                                </form>
+                            </td>
+                        </tr>
+                    @endforeach
+                    </tbody>
+                </table>
+            </div>
+        @endif
+
+        <div class="mt-4">
+            <h3 class="text-base-content/60 mb-2">Add New Attribute Type</h3>
+            <form action="{{ route('seller.products.attributes.store', $product->id) }}" method="post" class="flex gap-2">
+                @csrf
+                <input type="text" name="attribute_type_name" placeholder="e.g., Color, Material" class="input input-bordered grow">
+                <button type="submit" class="btn btn-primary">Add Attribute Type</button>
+            </form>
+        </div>
+
+        <div class="flex gap-4 mt-8" x-data>
             <button class="btn" @@click.prevent="window.history.back()">Back</button>
             <button class="btn btn-primary" type="submit">Save</button>
         </div>
