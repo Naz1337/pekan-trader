@@ -6,10 +6,11 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use App\Models\ProductCategory; // Add this line
 
 class Product extends Model
 {
-    protected $with = ['seller'];
+    protected $with = ['seller', 'category']; // Add 'category' to eager loading
 
     /**
      * The attributes that are mass assignable.
@@ -25,6 +26,7 @@ class Product extends Model
         'image_path',
         'delivery_fee',
         'is_published',
+        'product_category_id', // Add this line
     ];
 
     /**
@@ -173,6 +175,11 @@ class Product extends Model
     /**
      * Get formatted attributes as key-value pairs.
      */
+    public function category(): BelongsTo
+    {
+        return $this->belongsTo(ProductCategory::class, 'product_category_id');
+    }
+
     public function getFormattedAttributesAttribute(): array
     {
         return $this->attributes()
