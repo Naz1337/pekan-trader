@@ -202,9 +202,39 @@
                         <th>Actions</th>
                     </tr>
                     </thead>
-                    <tbody>
+                    <tbody x-data="{
+                        deleteAttribute(deleteUrl, attributeName, rowElement) {
+                            if (confirm(`Are you sure you want to delete the attribute '${attributeName}'?`)) {
+                                const csrfToken = document.querySelector('meta[name=\'csrf-token\']').content;
+                                fetch(deleteUrl, {
+                                    method: 'POST', // Laravel uses POST with _method for DELETE
+                                    headers: {
+                                        'X-CSRF-TOKEN': csrfToken,
+                                        'Content-Type': 'application/json',
+                                        'Accept': 'application/json'
+                                    },
+                                    body: JSON.stringify({ _method: 'DELETE' })
+                                })
+                                .then(response => {
+                                    if (!response.ok) {
+                                        // If response is not OK (e.g., 4xx or 5xx), parse JSON error
+                                        return response.json().then(err => { throw new Error(err.message || 'Failed to delete attribute.'); });
+                                    }
+                                    return response.json();
+                                })
+                                .then(data => {
+                                    alert(data.message || 'Attribute deleted successfully!');
+                                    rowElement.remove(); // Remove the row from the DOM
+                                })
+                                .catch(error => {
+                                    alert('Error: ' + error.message);
+                                    console.error('Error deleting attribute:', error);
+                                });
+                            }
+                        }
+                    }">
                     @foreach($product->productAttributes->sortBy('order_column') as $index => $attribute)
-                        <tr>
+                        <tr x-ref="attributeRow{{ $attribute->id }}">
                             <td>{{ $attribute->productAttributeKey->display_name }}</td>
                             <td>
                                 <input type="hidden" name="attributes[{{ $index }}][id]" value="{{ $attribute->id }}">
@@ -214,11 +244,15 @@
                                 <input type="number" name="attributes[{{ $index }}][order_column]" value="{{ $attribute->order_column }}" class="input input-bordered input-sm w-20">
                             </td>
                             <td>
-                                <form action="{{ route('seller.products.attributes.destroy', ['product' => $product->id, 'attribute' => $attribute->id]) }}" method="post">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="btn btn-error btn-sm">Delete</button>
-                                </form>
+                                <button type="button"
+                                        @@click="deleteAttribute(
+                                            '{{ route('seller.products.attributes.destroy', ['product' => $product->id, 'attribute' => $attribute->id]) }}',
+                                            '{{ $attribute->productAttributeKey->display_name }}',
+                                            $refs.attributeRow{{ $attribute->id }}
+                                        )"
+                                        class="btn btn-error btn-sm">
+                                    Delete
+                                </button>
                             </td>
                         </tr>
                     @endforeach
