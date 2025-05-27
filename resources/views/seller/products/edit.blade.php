@@ -203,14 +203,15 @@
                     </tr>
                     </thead>
                     <tbody>
-                    @foreach($product->productAttributes->sortBy('order_column') as $attribute)
+                    @foreach($product->productAttributes->sortBy('order_column') as $index => $attribute)
                         <tr>
                             <td>{{ $attribute->productAttributeKey->display_name }}</td>
                             <td>
-                                <input type="text" name="attributes[{{ $attribute->id }}][value]" value="{{ $attribute->value }}" class="input input-bordered input-sm w-full max-w-xs">
+                                <input type="hidden" name="attributes[{{ $index }}][id]" value="{{ $attribute->id }}">
+                                <input type="text" name="attributes[{{ $index }}][value]" value="{{ $attribute->value }}" class="input input-bordered input-sm w-full max-w-xs">
                             </td>
                             <td>
-                                <input type="number" name="attributes[{{ $attribute->id }}][order_column]" value="{{ $attribute->order_column }}" class="input input-bordered input-sm w-20">
+                                <input type="number" name="attributes[{{ $index }}][order_column]" value="{{ $attribute->order_column }}" class="input input-bordered input-sm w-20">
                             </td>
                             <td>
                                 <form action="{{ route('seller.products.attributes.destroy', ['product' => $product->id, 'attribute' => $attribute->id]) }}" method="post">
