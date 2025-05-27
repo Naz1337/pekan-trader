@@ -226,15 +226,6 @@
             </div>
         @endif
 
-        <div class="mt-4">
-            <h3 class="text-base-content/60 mb-2">Add New Attribute Type</h3>
-            <form action="{{ route('seller.products.attributes.store', $product->id) }}" method="post" class="flex gap-2">
-                @csrf
-                <input type="text" name="attribute_type_name" placeholder="e.g., Color, Material" class="input input-bordered grow">
-                <button type="submit" class="btn btn-primary">Add Attribute Type</button>
-            </form>
-        </div>
-
         <div class="flex gap-4 mt-8" x-data>
             <button class="btn" @@click.prevent="window.history.back()">Back</button>
             <button class="btn btn-primary" type="submit">Save</button>
@@ -243,5 +234,14 @@
         @csrf
         @method('PUT')
     </form>
+
+    <div class="mt-4">
+        <h3 class="text-base-content/60 mb-2">Add New Attribute Type</h3>
+        <form action="{{ route('seller.products.attributes.store', $product->id) }}" method="post" class="flex gap-2">
+            @csrf
+            <input type="text" name="attribute_type_name" placeholder="e.g., Color, Material" class="input input-bordered grow">
+            <button type="submit" class="btn btn-primary">Add Attribute Type</button>
+        </form>
+    </div>
 
 </x-layout.seller>
