@@ -272,16 +272,19 @@ class ProductController extends Controller
     public function destroyAttribute(Request $request, Product $product, ProductAttribute $attribute)
     {
         if ($request->user()->cannot('update', $product)) {
-            return redirect()->route('home');
+            return response()->json(['message' => 'Unauthorized to update this product.'], 403);
         }
 
         // Ensure the attribute belongs to the product
         if ($attribute->product_id !== $product->id) {
-            return back()->with('error', 'Attribute does not belong to this product.');
+            return response()->json(['message' => 'Attribute does not belong to this product.'], 403);
         }
 
-        $attribute->delete();
-
-        return back()->with('success', 'Attribute deleted successfully!');
+        try {
+            $attribute->delete();
+            return response()->json(['message' => 'Attribute deleted successfully!'], 200);
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to delete attribute: ' . $e->getMessage()], 500);
+        }
     }
 }
