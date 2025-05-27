@@ -15,3 +15,10 @@ In Laravel, uploaded files are stored on the server’s disk—either in a **pub
 ## Something to think about when making form
 
 When making a form, please consider using the blade components in the form folder
+
+## Database Conventions
+
+- **Foreign Keys:** Adhere to Laravel's convention for foreign key columns: `singular_table_name_id`. For example, for a `ProductAttribute` belonging to a `ProductAttributeKey`, the foreign key in the `product_attributes` table should ideally be `product_attribute_key_id`. If deviating from this, ensure explicit definition in model relationships.
+- **Primary Keys:** Use `id` (auto-incrementing integer).
+- **Table Names:** Use plural snake_case (e.g., `product_attributes`).
+- **Model Names:** Use Singular PascalCase (e.g., `ProductAttribute`).

@@ -252,7 +252,7 @@ class ProductController extends Controller
         $key_name = Str::lower(Str::replace(' ', '_', $display_name));
 
         $productAttributeKey = ProductAttributeKey::firstOrCreate(
-            ['key_name' => $key_name],
+            ['name' => $key_name],
             ['display_name' => $display_name]
         );
 
@@ -261,7 +261,7 @@ class ProductController extends Controller
         $nextOrder = $maxOrder !== null ? $maxOrder + 1 : 0;
 
         $product->productAttributes()->create([
-            'product_attribute_key_id' => $productAttributeKey->id,
+            'attribute_key_id' => $productAttributeKey->id,
             'value' => null, // Or an empty string, as per requirement
             'order_column' => $nextOrder,
         ]);

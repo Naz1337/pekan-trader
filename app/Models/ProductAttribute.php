@@ -14,7 +14,7 @@ class ProductAttribute extends Model
      */
     protected $fillable = [
         'product_id',
-        'product_attribute_key_id',
+        'attribute_key_id',
         'value',
         'order_column',
     ];
@@ -32,7 +32,7 @@ class ProductAttribute extends Model
      */
     public function productAttributeKey(): BelongsTo
     {
-        return $this->belongsTo(ProductAttributeKey::class, 'product_attribute_key_id');
+        return $this->belongsTo(ProductAttributeKey::class, 'attribute_key_id');
     }
 
     /**
