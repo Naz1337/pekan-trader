@@ -11,3 +11,7 @@
 ## Something about how to handle files from user
 
 In Laravel, uploaded files are stored on the server’s disk—either in a **public** or **private** folder, not in the database. If you want to reference a file in the database, you only store its **relative path**, not the full path. This way, `Storage::url()` can generate the correct access URL when needed.
+
+## Something to think about when making form
+
+When making a form, please consider using the blade components in the form folder
