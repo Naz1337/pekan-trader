@@ -18,7 +18,7 @@
                 });
                ">Clear</a>
         </form>
-        <a class="btn btn-soft btn-primary" href="{{ route('seller.products.create') }}">Create</a>
+        <a class="btn btn-soft btn-primary" href="{{ route('seller.products.create') }}">Add New Product</a>
     </div>
 
     @if($products->count() !== 0)

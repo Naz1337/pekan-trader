@@ -12,15 +12,37 @@ class CatalogueController extends Controller
     public function home(Request $request)
     {
         $query = $request->input('query');
+        $categoryName = $request->input('category'); // Get category name from request
 
-        if (!$query) {
-            $products = Product::all();
-            return view('welcome', compact('products'));
+        $productsQuery = Product::query(); // Start with a base Eloquent query
+
+        if ($categoryName) {
+            // Find the category model by name
+            $category = \App\Models\ProductCategory::where('name', $categoryName)->first();
+            if ($category) {
+                // If category found, filter products by its ID
+                $productsQuery->where('product_category_id', $category->id);
+            }
+            // Optional: Handle case where categoryName is provided but not found (e.g., log, ignore, or show error)
         }
 
-        $products = Product::where('name', 'LIKE', '%' . $query . '%')->get();
+        if ($query) {
+            $productsQuery->where('name', 'LIKE', '%' . $query . '%');
+        }
 
-        return view('catalogue.search-result', compact('products'));
+        $products = $productsQuery->latest()->paginate(12); // Get paginated results, ordered by latest
+
+        // Pass all relevant data to the view
+        // The view should be consistent, e.g., 'catalogue.search-result' for any filtering
+        // or 'welcome' if no filters are applied.
+        // Given the original logic, if $query or $categoryName is present, it's a search.
+        if ($query || $categoryName) {
+            return view('catalogue.search-result', compact('products', 'query', 'categoryName'));
+        }
+
+        // If no query and no category, show the default 'welcome' view with all products (or paginated)
+        // The original code did Product::all(). We'll use the paginated query for consistency.
+        return view('welcome', compact('products', 'query', 'categoryName'));
     }
 
     function show(Product $product)

@@ -75,6 +75,23 @@
 
     </div>
 
+    {{-- Category Navigation Bar --}}
+    <div class="bg-base-100 shadow-md">
+        <div class="mx-auto py-3 max-w-[60rem] overflow-x-auto">
+            <div class="flex justify-center items-center space-x-4 px-8 w-fit">
+                @php
+                    $categories = \App\Models\ProductCategory::all();
+                @endphp
+                @foreach ($categories as $category)
+                    <a href="{{ route('home', ['category' => $category->name]) }}"
+                       class="text-sm hover:text-primary whitespace-nowrap px-2 py-1 rounded-md {{ request()->input('category') == $category->name ? 'bg-primary text-primary-content font-semibold' : '' }}">
+                        {{ $category->name }}
+                    </a>
+                @endforeach
+            </div>
+        </div>
+    </div>
+
     <div class="mb-32">
         {{ $slot }}
     </div>

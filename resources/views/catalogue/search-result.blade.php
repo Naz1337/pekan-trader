@@ -1,16 +1,35 @@
 <x-layout.main>
     <div class="max-w-280 ms-auto me-auto mt-20 rounded-box flex flex-col items-center p-4">
+    <div class="max-w-280 ms-auto me-auto mt-20 rounded-box flex flex-col items-center p-4">
         {{-- Search Bar (similar to welcome.blade.php) --}}
         <div class="flex gap-4 justify-center mb-10 w-full max-w-lg">
             {{-- Assuming the search is handled by GET request or JavaScript --}}
-            <form action="" method="GET" class="w-full"> {{-- Example route --}}
+            <form action="{{ route('home') }}" method="GET" class="w-full"> {{-- Example route --}}
                 <label for="search" class="input input-bordered input-lg flex items-center gap-2 w-full">
                     <input type="text" name="query" id="search" class="grow" placeholder="Search products..." value="{{ request('query') }}">
                     <button type="submit" class="btn btn-primary btn-square">
                         <x-icon.search class="h-6 w-6" />
                     </button>
                 </label>
+                @if(request('category'))
+                    <input type="hidden" name="category" value="{{ request('category') }}">
+                @endif
             </form>
+        </div>
+
+        {{-- Display current search query and category --}}
+        <div class="w-full max-w-3xl mb-4 text-center">
+            @if(isset($query) || isset($categoryName))
+                <h2 class="text-2xl font-bold text-base-content">
+                    Search Results
+                    @if(isset($query) && $query)
+                        for "{{ $query }}"
+                    @endif
+                    @if(isset($categoryName) && $categoryName)
+                        in "{{ $categoryName }}"
+                    @endif
+                </h2>
+            @endif
         </div>
 
         {{-- Search Results List --}}
@@ -57,15 +76,17 @@
                     @endforeach
                 </ul>
 
-                {{-- Pagination Links (if you are using pagination) --}}
-                {{-- <div class="mt-8">
+                {{-- Pagination Links --}}
+                <div class="mt-8">
                     {{ $products->links() }}
-                </div> --}}
+                </div>
             @else
                 <div class="text-center py-10">
                     <p class="text-xl text-base-content/70">
-                        @if(request('query'))
-                            No products found for "{{ request('query') }}".
+                        @if(isset($query) && $query)
+                            No products found for "{{ $query }}".
+                        @elseif(isset($categoryName) && $categoryName)
+                            No products found in category "{{ $categoryName }}".
                         @else
                             No products to display.
                         @endif
