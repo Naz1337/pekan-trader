@@ -37,11 +37,18 @@
                       action="{{ route('catalogue.add_to_cart', compact('product')) }}"
                       method="post">
 
-                    <div class="mb-4">
-                        <strong>Seller:</strong> <span class="link">{{ $product->seller->business_name }}</span>
+                    <div class="mb-4 flex items-center gap-2">
+                        <x-icon.store class="w-4 h-4 shrink-0 text-base-content/80"/>
+                        <strong>Seller:</strong> <span class="link link-hover">{{ $product->seller->business_name }}</span>
                     </div>
                     <div class="mb-8">
-                        <strong>Stock Available:</strong> {{ $product->stock_quantity }}
+                        @if($product->stock_quantity <= 0)
+                            <span class="badge badge-error badge-lg font-medium">Out of Stock</span>
+                        @elseif($product->stock_quantity > 0 && $product->stock_quantity <= 10)
+                            <span class="badge badge-warning badge-lg font-medium">Low Stock ({{ $product->stock_quantity }} left)</span>
+                        @else
+                            <span class="badge badge-success badge-lg font-medium">In Stock ({{ $product->stock_quantity }} available)</span>
+                        @endif
                     </div>
 
                     @if ($product->stock_quantity > 0)
@@ -64,8 +71,41 @@
 
 
             <div class="grow p-4 h-full">
-                <div class="text-6xl mb-4">{{ $product->name }}</div>
-                <div class="text-5xl mb-16 text-primary">RM {{ number_format($product->price, 2) }}</div>
+                <div class="flex items-center mb-4">
+                    <div class="text-6xl">{{ $product->name }}</div>
+                    @if($product->created_at->gt(now()->subDays(7)))
+                        <span class="badge badge-accent badge-lg font-semibold ml-4">NEW</span>
+                    @endif
+                </div>
+                <div class="text-5xl mb-4 text-primary">RM {{ number_format($product->price, 2) }}</div>
+
+                {{-- Product Category --}}
+                @if($product->category)
+                    <div class="text-md text-base-content/70 mb-4 flex items-center">
+                        <x-icon.tag class="w-4 h-4 mr-2 text-primary"/>
+                        <span>{{ $product->category->name }}</span>
+                    </div>
+                @endif
+
+                {{-- Fulfilled Orders Count --}}
+                @php
+                    $fulfilledQuantity = 0;
+                    if (method_exists($product, 'orderItems')) {
+                        $fulfilledQuantity = $product->orderItems()
+                            ->whereHas('order', function ($query) {
+                                $query->where('status', 'completed');
+                            })
+                            ->sum('quantity');
+                    }
+                @endphp
+                @if($fulfilledQuantity > 0)
+                    <div class="mb-8 flex items-center gap-2">
+                        <x-icon.star class="w-5 h-5 text-yellow-500"/>
+                        <span class="font-semibold text-lg text-base-content/90">{{ $fulfilledQuantity }}</span>
+                        <span class="text-md text-base-content/70">sold</span>
+                    </div>
+                @endif
+
                 <div>
                     @if ($product->description)
                         {!! nl2br(e($product->description)) !!}
@@ -74,25 +114,20 @@
                     @endif
                 </div>
 
-                @php
-//                xdebug_break();
-                @endphp
-
-                {{-- NEW: Product Specifications Section --}}
+                {{-- Product Specifications Section --}}
                 @if ($product->attributes && $product->attributes->count() > 0)
-                    <div class="mt-8 pt-6 border-t border-base-300"> {{-- Add margin, padding, and a top border for separation --}}
-                        <h3 class="text-2xl font-semibold mb-6">Product Specifications</h3> {{-- Section title --}}
-                        <div class="space-y-3"> {{-- Tailwind class for vertical spacing between attribute items --}}
+                    <div class="mt-8 pt-6 border-t border-base-300">
+                        <h3 class="text-2xl font-semibold mb-6">Product Specifications</h3>
+                        <div class="space-y-3">
                             @foreach ($product->attributes as $attribute)
                                 <div class="flex">
-                                    <span class="font-semibold text-base-content w-2/5 md:w-1/3 shrink-0 pr-2">{{ $attribute->productAttributeKey->display_name }}:</span> {{-- Attribute Key: bolded, specific width, right padding --}}
-                                    <span class="text-base-content/80">{{ $attribute->value }}</span> {{-- Attribute Value --}}
+                                    <span class="font-semibold text-base-content w-2/5 md:w-1/3 shrink-0 pr-2">{{ $attribute->productAttributeKey->display_name }}:</span>
+                                    <span class="text-base-content/80">{{ $attribute->value }}</span>
                                 </div>
                             @endforeach
                         </div>
                     </div>
                 @endif
-                {{-- End of NEW Product Specifications Section --}}
             </div>
         </div>
 
