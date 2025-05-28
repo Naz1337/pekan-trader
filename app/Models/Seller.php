@@ -7,6 +7,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Support\Facades\Storage;
 
 class Seller extends Model
 {
@@ -56,5 +57,10 @@ class Seller extends Model
     public function orders(): HasMany
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function getProfileImageUrlAttribute()
+    {
+        return $this->logo_url ? Storage::url($this->logo_url) : '/imgs/user-icon.png';
     }
 }

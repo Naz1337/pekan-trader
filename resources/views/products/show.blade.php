@@ -39,7 +39,7 @@
 
                     <div class="mb-4 flex items-center gap-2">
                         <x-icon.store class="w-4 h-4 shrink-0 text-base-content/80"/>
-                        <strong>Seller:</strong> <span class="link link-hover">{{ $product->seller->business_name }}</span>
+                        <strong>Seller:</strong> <a href="{{ route('seller.profile.show', $product->seller) }}" class="link link-hover">{{ $product->seller->business_name }}</a>
                     </div>
                     <div class="mb-8">
                         @if($product->stock_quantity <= 0)

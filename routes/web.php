@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CatalogueController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\SellerProfileController;
 
 Route::middleware('guest')->group(function () {
     Route::controller(AuthController::class)->group(function () {
@@ -103,6 +104,8 @@ Route::controller(CatalogueController::class)->group(function () {
         Route::delete('/cart/{product}', 'remove_from_cart')->name('cart.remove');
     });
 });
+
+Route::get('/sellers/{seller}', [SellerProfileController::class, 'show'])->name('seller.profile.show');
 
 Route::middleware('auth')->group(function () {
     Route::controller(OrderController::class)->group(function () {
