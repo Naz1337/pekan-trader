@@ -3,7 +3,7 @@
     <div class="max-w-280 ms-auto me-auto mt-20 rounded-box flex flex-col items-center p-4">
 
         <div class="flex items-start w-full">
-            <div class="flex flex-col gap-16">
+            <div class="flex flex-col gap-16 min-w-[425px]">
                 <div x-data='{
                         images: @json($product->all_image_urls),
                         currentImage: @json($product->main_image_url),
@@ -11,21 +11,21 @@
                             this.currentImage = newUrl;
                         }
                     }'
-                     class="flex flex-col md:flex-row gap-4">
+                     class="flex flex-col gap-4">
 
                     {{-- Main Image Display --}}
-                    <div class="flex-grow">
-                        <img :src="currentImage" alt="{{ $product->name }} image" class="max-w-100 min-h-100 object-contain rounded-box">
+                    <div class="w-full">
+                        <img :src="currentImage" alt="{{ $product->name }} image" class="w-full max-w-lg min-h-100 object-contain rounded-box mx-auto">
                     </div>
 
                     {{-- Thumbnail Gallery --}}
                     <template x-if="images.length > 1">
-                        <div class="flex flex-row md:flex-col gap-2 p-2 overflow-auto">
+                        <div class="flex flex-row gap-2 p-2 overflow-x-auto w-full mt-2">
                             <template x-for="(imageUrl, index) in images" :key="index">
                                 <img :src="imageUrl"
                                      @click="changeImage(imageUrl)"
                                      alt="Product thumbnail {{ '${index + 1}' }}"
-                                     class="w-20 h-20 md:w-24 md:h-24 object-cover rounded cursor-pointer border-2"
+                                     class="w-24 h-24 object-cover rounded cursor-pointer border-2 flex-shrink-0"
                                      :class="{ 'border-primary': imageUrl === currentImage, 'border-transparent': imageUrl !== currentImage }"
                                 >
                             </template>
