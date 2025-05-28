@@ -77,13 +77,26 @@
 
     {{-- Category Navigation Bar --}}
     <div class="bg-base-100 shadow-md">
-        <div class="mx-auto py-3 max-w-[60rem] overflow-x-auto">
+        <div
+            x-data="{ activeCategoryName: '{{ e(request()->input('category') ?? '') }}' }"
+            x-ref="scroller"
+            x-init="() => {
+                if (activeCategoryName) {
+                    const activeLink = $refs.scroller.querySelector(`a[data-category-name='${activeCategoryName}']`);
+                    if (activeLink) {
+                        activeLink.scrollIntoView({ block: 'nearest', inline: 'center' });
+                    }
+                }
+            }"
+            class="mx-auto py-3 max-w-[60rem] overflow-x-auto"
+        >
             <div class="flex justify-center items-center space-x-4 px-8 w-fit">
                 @php
                     $categories = \App\Models\ProductCategory::all();
                 @endphp
                 @foreach ($categories as $category)
                     <a href="{{ route('home', ['category' => $category->name]) }}"
+                       data-category-name="{{ e($category->name) }}"
                        class="text-sm hover:text-primary whitespace-nowrap px-2 py-1 rounded-md {{ request()->input('category') == $category->name ? 'bg-primary text-primary-content font-semibold' : '' }}">
                         {{ $category->name }}
                     </a>
