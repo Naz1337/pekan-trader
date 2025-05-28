@@ -51,25 +51,75 @@
                             }
                         @endphp
                         <li class="p-0 bg-transparent shadow-none hover:bg-transparent">
-                            <a href="{{ route('catalogue.show', $product->id) }}" class="flex items-center bg-base-200 p-4 rounded-xl shadow-md hover:bg-base-300 transition-colors duration-150 ease-in-out no-underline text-inherit">
+                            <a href="{{ route('catalogue.show', $product->id) }}" class="flex items-center bg-base-200 p-4 rounded-xl shadow-md hover:bg-base-300 transition-colors duration-150 ease-in-out no-underline text-inherit group">
                                 {{-- Product Image --}}
-                                <div class="flex-shrink-0 w-24 h-24 mr-6">
-                                    <img src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name ?? 'Product Image' }}" class="w-full h-full object-cover rounded-lg">
+                                <div class="flex-shrink-0 w-24 h-24 mr-6 relative">
+                                    {{-- "New" Badge --}}
+                                    @if($product->created_at->gt(now()->subDays(7)))
+                                        <div class="badge badge-accent badge-sm absolute top-1 right-1 z-10 font-semibold">NEW</div>
+                                    @endif
+
+                                    <img src="{{ $product->main_image_url }}" alt="{{ $product->name ?? 'Product Image' }}"
+                                         class="w-full h-full object-cover rounded-lg group-hover:scale-105 transition-transform duration-300 ease-in-out">
+
+                                    {{-- Stock Indicator (Overlay on image or below) --}}
+                                    @if($product->stock_quantity <= 0)
+                                        <div class="absolute bottom-1 left-1/2 -translate-x-1/2 z-10">
+                                            <span class="badge badge-error badge-outline font-medium">Out of Stock</span>
+                                        </div>
+                                    @elseif($product->stock_quantity > 0 && $product->stock_quantity <= 10)
+                                        <div class="absolute bottom-1 right-1 z-10">
+                                            <span class="badge badge-warning badge-outline badge-sm font-medium">Low Stock</span>
+                                        </div>
+                                    @endif
                                 </div>
                                 {{-- Product Info --}}
-                                <div class="flex-grow">
-                                    <h3 class="text-xl font-semibold text-base-content">{{ $product->name ?? 'Product Name' }}</h3>
-                                    <p class="text-lg text-primary font-medium mt-1">
-                                        RM {{ number_format($product->price ?? 0, 2) }}
-                                    </p>
-                                    <p class="text-sm text-base-content/70 mt-1">
-                                        Stock: {{ $product->stock_quantity ?? 'N/A' }}
-                                    </p>
+                                <div class="flex-grow flex flex-col justify-between">
+                                    <div>
+                                        {{-- Category --}}
+                                        @if($product->category)
+                                            <div class="text-xs text-base-content/70 mb-1.5 flex items-center">
+                                                <x-icon.tag class="w-3 h-3 mr-1.5 text-primary"/>
+                                                <span>{{ $product->category->name }}</span>
+                                            </div>
+                                        @endif
+
+                                        <h3 class="text-xl font-semibold text-base-content mb-1 leading-snug hover:text-primary transition-colors">
+                                            {{ $product->name ?? 'Product Name' }}
+                                        </h3>
+
+                                        <p class="text-lg text-primary font-medium mb-2">
+                                            RM {{ number_format($product->price ?? 0, 2) }}
+                                        </p>
+
+                                        {{-- Short Description --}}
+                                        <p class="text-sm text-base-content/80 mb-3 h-10 overflow-hidden">
+                                            {{ Str::limit($product->description, 70) }}
+                                        </p>
+                                    </div>
+
+                                    @if($product->seller)
+                                        <div class="mt-auto pt-2 border-t border-base-300">
+                                            <div class="flex gap-2 text-xs items-center text-base-content/70">
+                                                <x-icon.store class="w-3.5 h-3.5 shrink-0 text-base-content/80"/>
+                                                <span class="truncate" title="{{ $product->seller->business_name }}">
+                                                    {{ $product->seller->business_name }}
+                                                </span>
+                                            </div>
+                                        </div>
+                                    @endif
                                 </div>
                                 {{-- Fulfilled Orders Count --}}
                                 <div class="flex-shrink-0 text-right ml-6 min-w-[60px]">
-                                    <p class="text-2xl font-bold text-secondary">{{ $fulfilledQuantity }}</p>
-                                    <p class="text-sm text-base-content/70">Sold</p>
+                                    @if($fulfilledQuantity > 0)
+                                        <div class="flex flex-col items-end">
+                                            <div class="flex items-center gap-1.5">
+                                                <x-icon.star class="w-4 h-4 text-yellow-500"/>
+                                                <span class="font-semibold text-sm text-base-content/90">{{ $fulfilledQuantity }}</span>
+                                            </div>
+                                            <span class="text-xs text-base-content/70">sold</span>
+                                        </div>
+                                    @endif
                                 </div>
                             </a>
                         </li>
