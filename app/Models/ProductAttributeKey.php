@@ -36,7 +36,7 @@ class ProductAttributeKey extends Model
      */
     public function productAttributes(): HasMany
     {
-        return $this->hasMany(ProductAttribute::class, 'product_attribute_key_id');
+        return $this->hasMany(ProductAttribute::class, 'attribute_key_id');
     }
 
     /**

@@ -142,7 +142,7 @@ class Product extends Model
     /**
      * Get all attributes for this product.
      */
-    public function productAttributes(): HasMany
+    public function attributes(): HasMany
     {
         return $this->hasMany(ProductAttribute::class);
     }

@@ -189,7 +189,7 @@
 
         <div class="text-base-content/40 mt-8 mb-4">Product Attributes</div>
 
-        @if($product->productAttributes->isEmpty())
+        @if($product->attributes->isEmpty())
             <p class="text-sm text-base-content/60 mb-4">This product has no attributes yet. Add an attribute type below to get started.</p>
         @else
             <div class="overflow-x-auto mb-4">
@@ -224,7 +224,7 @@
                                 })
                                 .then(data => {
                                     alert(data.message || 'Attribute deleted successfully!');
-                                    rowElement.remove(); // Remove the row from the DOM
+                                    window.location.reload(); // Reload the page to reflect changes from server
                                 })
                                 .catch(error => {
                                     alert('Error: ' + error.message);
@@ -233,7 +233,7 @@
                             }
                         }
                     }">
-                    @foreach($product->productAttributes->sortBy('order_column') as $index => $attribute)
+                    @foreach($product->attributes->sortBy('order_column') as $index => $attribute)
                         <tr x-ref="attributeRow{{ $attribute->id }}">
                             <td>{{ $attribute->productAttributeKey->display_name }}</td>
                             <td>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\ProductCategory;
 use App\Models\Seller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Validator;
@@ -27,9 +28,15 @@ class AuthController extends Controller
 
         // Attempt to log the user in
         if (auth()->attempt($validated)) {
+            $products = Product::all();
+            $categories = ProductCategory::all();
             // Redirect to the intended page
-            return response()->view('welcome', ['products' => Product::all()])
-                ->header('HX-Redirect', route('home'));
+            return response()->view('welcome', [
+                'products' => $products,
+                'categories' => $categories,
+                'query' => null,
+                'categoryName' => null
+            ])->header('HX-Redirect', route('home'));
         }
 
         $request->session()->flash('email', $validated['email']);

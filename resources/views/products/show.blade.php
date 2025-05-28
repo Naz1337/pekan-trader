@@ -73,6 +73,26 @@
                         <div class="text-base-content/40 italic">There is no description for this product</div>
                     @endif
                 </div>
+
+                @php
+//                xdebug_break();
+                @endphp
+
+                {{-- NEW: Product Specifications Section --}}
+                @if ($product->attributes && $product->attributes->count() > 0)
+                    <div class="mt-8 pt-6 border-t border-base-300"> {{-- Add margin, padding, and a top border for separation --}}
+                        <h3 class="text-2xl font-semibold mb-6">Product Specifications</h3> {{-- Section title --}}
+                        <div class="space-y-3"> {{-- Tailwind class for vertical spacing between attribute items --}}
+                            @foreach ($product->attributes as $attribute)
+                                <div class="flex">
+                                    <span class="font-semibold text-base-content w-2/5 md:w-1/3 shrink-0 pr-2">{{ $attribute->productAttributeKey->display_name }}:</span> {{-- Attribute Key: bolded, specific width, right padding --}}
+                                    <span class="text-base-content/80">{{ $attribute->value }}</span> {{-- Attribute Value --}}
+                                </div>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+                {{-- End of NEW Product Specifications Section --}}
             </div>
         </div>
 

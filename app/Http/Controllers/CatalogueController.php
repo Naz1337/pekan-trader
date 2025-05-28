@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Cart;
 use App\Models\Order;
 use App\Models\Product;
+use App\Models\ProductCategory;
 use Illuminate\Http\Request;
 
 class CatalogueController extends Controller
@@ -31,22 +32,24 @@ class CatalogueController extends Controller
         }
 
         $products = $productsQuery->latest()->paginate(12); // Get paginated results, ordered by latest
+        $categories = ProductCategory::all();
 
         // Pass all relevant data to the view
         // The view should be consistent, e.g., 'catalogue.search-result' for any filtering
         // or 'welcome' if no filters are applied.
         // Given the original logic, if $query or $categoryName is present, it's a search.
         if ($query || $categoryName) {
-            return view('catalogue.search-result', compact('products', 'query', 'categoryName'));
+            return view('catalogue.search-result', compact('products', 'query', 'categoryName', 'categories'));
         }
 
         // If no query and no category, show the default 'welcome' view with all products (or paginated)
         // The original code did Product::all(). We'll use the paginated query for consistency.
-        return view('welcome', compact('products', 'query', 'categoryName'));
+        return view('welcome', compact('products', 'query', 'categoryName', 'categories'));
     }
 
-    function show(Product $product)
+    public function show(Product $product)
     {
+        $product->load('attributes.productAttributeKey');
         return view('products.show', compact('product'));
     }
 

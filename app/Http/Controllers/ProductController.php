@@ -130,7 +130,7 @@ class ProductController extends Controller
             return redirect()->route('home');
         }
 
-        $product->load(['productAttributes.productAttributeKey', 'category']);
+        $product->load(['attributes.productAttributeKey', 'category']);
         $productCategories = ProductCategory::all();
 
         return view('seller.products.edit', compact('product', 'productCategories'));
@@ -217,7 +217,7 @@ class ProductController extends Controller
         // Update product attributes
         if (isset($validated['attributes'])) {
             foreach ($validated['attributes'] as $attributeData) {
-                $productAttribute = $product->productAttributes->find($attributeData['id']);
+                $productAttribute = $product->attributes->find($attributeData['id']);
                 if ($productAttribute) {
                     $productAttribute->value = $attributeData['value'];
                     $productAttribute->order_column = $attributeData['order_column'];
@@ -257,10 +257,10 @@ class ProductController extends Controller
         );
 
         // Determine the next order_column
-        $maxOrder = $product->productAttributes()->max('order_column');
+        $maxOrder = $product->attributes()->max('order_column');
         $nextOrder = $maxOrder !== null ? $maxOrder + 1 : 0;
 
-        $product->productAttributes()->create([
+        $product->attributes()->create([
             'attribute_key_id' => $productAttributeKey->id,
             'value' => null, // Or an empty string, as per requirement
             'order_column' => $nextOrder,
