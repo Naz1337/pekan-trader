@@ -1,8 +1,21 @@
 @use('Illuminate\Support\Facades\Storage')
 <x-layout.seller title="Product Details">
-    <div>
-        <img src="{{ Storage::url($product->image_path) }}" alt=""
-             class="rounded-box shadow-md max-w-120 mb-8 max-h-70">
+    <div class="mb-8">
+        @if (count($product->all_image_urls) > 0)
+            <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
+                @foreach ($product->all_image_urls as $imageUrl)
+                    <div>
+                        <img src="{{ $imageUrl }}" alt="Image for {{ $product->name }}"
+                             class="rounded-box shadow-md object-cover w-full h-40 sm:h-48">
+                    </div>
+                @endforeach
+            </div>
+        @else
+            {{-- Fallback: Using the main_image_url which has its own placeholder logic --}}
+            <img src="{{ $product->main_image_url }}" alt="Product image for {{ $product->name }}"
+                 class="rounded-box shadow-md max-w-xs sm:max-w-sm md:max-w-md mb-8 max-h-60 sm:max-h-70">
+            <p class="text-sm text-gray-500 italic mt-2">No additional images available, or main image shown.</p>
+        @endif
     </div>
 
     <div class="flex justify-between max-w-150 items-center">

@@ -30,7 +30,7 @@
                 @foreach($products as $product)
                     <a class="card card-side bg-base-100 shadow-sm w-[345px] max-h-[200px]" href="{{ route('seller.products.show', compact('product')) }}">
                         <figure class="border-r-1 border-base-content/10">
-                            <img class="w-[120px] max-h-[100px] object-contain p-1" src="{{ Storage::url($product->image_path) }}" />
+                            <img class="w-[120px] max-h-[100px] object-contain p-1" src="{{ $product->main_image_url }}" alt="Image of {{ $product->name }}" />
                         </figure>
                         <div class="card-body">
                             <div class="flex justify-between items-center">
