@@ -48,5 +48,36 @@ class SellerSeeder extends Seeder
                 'bank_account_number' => $faker->bankAccountNumber,
             ]);
         }
+
+        // Create a specific Malaysian company seller
+        $malaysianCompanyUser = User::firstOrCreate(
+            ['email' => 'admin@majujaya.com.my'],
+            [
+                'name' => 'Maju Jaya Admin',
+                'password' => Hash::make('password'),
+                'is_seller' => true,
+            ]
+        );
+
+        Seller::firstOrCreate(
+            ['user_id' => $malaysianCompanyUser->id],
+            [
+                'business_name' => 'Syarikat Maju Jaya Sdn Bhd',
+                'business_description' => 'Supplier of quality local goods',
+                'business_address' => 'No. 123, Jalan Perniagaan, 50480 Kuala Lumpur',
+                'business_phone' => '03-12345678',
+                'business_email' => 'admin@majujaya.com.my',
+                'logo_url' => 'https://via.placeholder.com/150/0000FF/808080?Text=MajuJaya',
+                'opening_hour' => '09:00',
+                'closing_hour' => '18:00',
+                'facebook' => 'https://facebook.com/majujaya',
+                'instagram' => 'https://instagram.com/majujaya',
+                'ic_number' => '800101105555',
+                'business_cert_url' => 'https://via.placeholder.com/400x300/CCCCCC/808080?Text=BusinessCert',
+                'bank_name' => 'Maybank',
+                'bank_account_name' => 'Syarikat Maju Jaya Sdn Bhd',
+                'bank_account_number' => '123456789012',
+            ]
+        );
     }
 }
