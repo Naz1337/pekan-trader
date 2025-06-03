@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\Product;
 
 class ProductAttribute extends Model
 {
@@ -91,5 +92,15 @@ class ProductAttribute extends Model
             default:
                 return $this->value;
         }
+    }
+
+    public static function newAttributeForProduct(Product $product, int $attributeKeyId, ?string $value, int $order): self
+    {
+        return self::create([
+            'product_id' => $product->id,
+            'attribute_key_id' => $attributeKeyId,
+            'value' => $value,
+            'order_column' => $order,
+        ]);
     }
 }

@@ -43,13 +43,16 @@ class ProductSeeder extends Seeder
 
         // Define default image paths
         $defaultImagePaths = [
-            database_path('seeders/product_images/default_product_image_1.jpg'),
-            database_path('seeders/product_images/default_product_image_2.jpg'),
+            database_path('seeders/product_images/08-2024-Durians-3_2024-09-02-154952_hpjj.jpg'),
+            database_path('seeders/product_images/l-intro-1744387044.jpg'),
             // Add more default image paths if needed
         ];
 
         // Create a map for category names to IDs for efficient lookup
         $categoryNameToIdMap = ProductCategory::all()->pluck('id', 'name')->toArray();
+
+        // Create a map for attribute key names to IDs for efficient lookup
+        $attributeKeyNameToIdMap = ProductAttributeKey::all()->pluck('id', 'name')->toArray();
 
         // Get image files from the product_images directory
         $imageFiles = File::files(database_path('seeders/product_images'));
@@ -72,6 +75,11 @@ class ProductSeeder extends Seeder
                 'price' => 28.00,
                 'stock_quantity' => 200,
                 'category_name' => 'Agricultural & Fresh Produce',
+                'attributes' => [
+                    ['key_name' => 'weight', 'value' => '250 grams'],
+                    ['key_name' => 'origin', 'value' => 'Cameron Highlands'],
+                    ['key_name' => 'type', 'value' => 'Organic'],
+                ],
             ],
             [
                 'name' => 'Pahang Air Nanas Pineapple',
@@ -79,6 +87,11 @@ class ProductSeeder extends Seeder
                 'price' => 15.00,
                 'stock_quantity' => 500,
                 'category_name' => 'Agricultural & Fresh Produce',
+                'attributes' => [
+                    ['key_name' => 'weight', 'value' => '1.5 kg'],
+                    ['key_name' => 'origin', 'value' => 'Pahang'],
+                    ['key_name' => 'flavor', 'value' => 'Sweet & Juicy'],
+                ],
             ],
             [
                 'name' => 'Pahang Red Dragon Fruit',
@@ -86,6 +99,11 @@ class ProductSeeder extends Seeder
                 'price' => 12.00,
                 'stock_quantity' => 400,
                 'category_name' => 'Agricultural & Fresh Produce',
+                'attributes' => [
+                    ['key_name' => 'weight', 'value' => '500 grams'],
+                    ['key_name' => 'color', 'value' => 'Red'],
+                    ['key_name' => 'type', 'value' => 'Sustainable'],
+                ],
             ],
             [
                 'name' => 'Pahang Black Glutinous Rice',
@@ -93,6 +111,11 @@ class ProductSeeder extends Seeder
                 'price' => 18.00,
                 'stock_quantity' => 300,
                 'category_name' => 'Agricultural & Fresh Produce',
+                'attributes' => [
+                    ['key_name' => 'weight', 'value' => '1 kg'],
+                    ['key_name' => 'origin', 'value' => 'Pahang'],
+                    ['key_name' => 'type', 'value' => 'Glutinous'],
+                ],
             ],
             [
                 'name' => 'Pahang Jackfruit Seeds',
@@ -100,6 +123,11 @@ class ProductSeeder extends Seeder
                 'price' => 6.00,
                 'stock_quantity' => 250,
                 'category_name' => 'Agricultural & Fresh Produce',
+                'attributes' => [
+                    ['key_name' => 'weight', 'value' => '200 grams'],
+                    ['key_name' => 'packaging', 'value' => 'Bag'],
+                    ['key_name' => 'type', 'value' => 'Fresh'],
+                ],
             ],
 
             // Food & Beverage (F&B)
@@ -109,6 +137,11 @@ class ProductSeeder extends Seeder
                 'price' => 20.00,
                 'stock_quantity' => 200,
                 'category_name' => 'Food & Beverage (F&B)',
+                'attributes' => [
+                    ['key_name' => 'flavor', 'value' => 'Spicy & Tangy'],
+                    ['key_name' => 'packaging', 'value' => 'Jar'],
+                    ['key_name' => 'weight', 'value' => '200 grams'],
+                ],
             ],
             [
                 'name' => 'Teh Tarik Pahang Blend',
@@ -116,6 +149,11 @@ class ProductSeeder extends Seeder
                 'price' => 12.00,
                 'stock_quantity' => 300,
                 'category_name' => 'Food & Beverage (F&B)',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Tea Blend'],
+                    ['key_name' => 'packaging', 'value' => 'Pouch'],
+                    ['key_name' => 'weight', 'value' => '250 grams'],
+                ],
             ],
             [
                 'name' => 'Pahang Coconut Sugar',
@@ -123,6 +161,11 @@ class ProductSeeder extends Seeder
                 'price' => 15.00,
                 'stock_quantity' => 250,
                 'category_name' => 'Food & Beverage (F&B)',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Unrefined'],
+                    ['key_name' => 'packaging', 'value' => 'Bag'],
+                    ['key_name' => 'weight', 'value' => '500 grams'],
+                ],
             ],
             [
                 'name' => 'Pahang Kuih Tradisional Assorted Pack',
@@ -130,6 +173,11 @@ class ProductSeeder extends Seeder
                 'price' => 25.00,
                 'stock_quantity' => 150,
                 'category_name' => 'Food & Beverage (F&B)',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Assorted'],
+                    ['key_name' => 'packaging', 'value' => 'Box'],
+                    ['key_name' => 'weight', 'value' => '500 grams'],
+                ],
             ],
             [
                 'name' => 'Pahang Cempedak Chips',
@@ -137,6 +185,11 @@ class ProductSeeder extends Seeder
                 'price' => 8.00,
                 'stock_quantity' => 400,
                 'category_name' => 'Food & Beverage (F&B)',
+                'attributes' => [
+                    ['key_name' => 'flavor', 'value' => 'Cempedak'],
+                    ['key_name' => 'packaging', 'value' => 'Bag'],
+                    ['key_name' => 'weight', 'value' => '100 grams'],
+                ],
             ],
 
             // Fashion & Accessories
@@ -146,6 +199,11 @@ class ProductSeeder extends Seeder
                 'price' => 150.00,
                 'stock_quantity' => 60,
                 'category_name' => 'Fashion & Accessories',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Tenun Fabric'],
+                    ['key_name' => 'style', 'value' => 'Tote Bag'],
+                    ['key_name' => 'color', 'value' => 'Multi-color'],
+                ],
             ],
             [
                 'name' => 'Batik Pahang Silk Scarf',
@@ -153,6 +211,11 @@ class ProductSeeder extends Seeder
                 'price' => 120.00,
                 'stock_quantity' => 50,
                 'category_name' => 'Fashion & Accessories',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Silk'],
+                    ['key_name' => 'style', 'value' => 'Scarf'],
+                    ['key_name' => 'color', 'value' => 'Assorted Batik'],
+                ],
             ],
             [
                 'name' => 'Pahang Tribal Beaded Earrings',
@@ -160,6 +223,11 @@ class ProductSeeder extends Seeder
                 'price' => 45.00,
                 'stock_quantity' => 100,
                 'category_name' => 'Fashion & Accessories',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Beads'],
+                    ['key_name' => 'style', 'value' => 'Tribal'],
+                    ['key_name' => 'color', 'value' => 'Assorted'],
+                ],
             ],
             [
                 'name' => 'Pahang Songket Shawl',
@@ -167,6 +235,11 @@ class ProductSeeder extends Seeder
                 'price' => 220.00,
                 'stock_quantity' => 30,
                 'category_name' => 'Fashion & Accessories',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Songket Fabric'],
+                    ['key_name' => 'color', 'value' => 'Gold/Silver'],
+                    ['key_name' => 'occasion', 'value' => 'Formal'],
+                ],
             ],
             [
                 'name' => 'Rattan Bangle Set',
@@ -174,6 +247,11 @@ class ProductSeeder extends Seeder
                 'price' => 35.00,
                 'stock_quantity' => 120,
                 'category_name' => 'Fashion & Accessories',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Rattan'],
+                    ['key_name' => 'style', 'value' => 'Bangle'],
+                    ['key_name' => 'type', 'value' => 'Set of 3'],
+                ],
             ],
 
             // Handicrafts & Souvenirs
@@ -183,6 +261,11 @@ class ProductSeeder extends Seeder
                 'price' => 60.00,
                 'stock_quantity' => 50,
                 'category_name' => 'Handicrafts & Souvenirs',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Wood'],
+                    ['key_name' => 'dimensions', 'value' => '200x50x70mm'],
+                    ['key_name' => 'type', 'value' => 'Decorative'],
+                ],
             ],
             [
                 'name' => 'Pahang Tribal Clay Pottery',
@@ -190,6 +273,11 @@ class ProductSeeder extends Seeder
                 'price' => 75.00,
                 'stock_quantity' => 40,
                 'category_name' => 'Handicrafts & Souvenirs',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Clay'],
+                    ['key_name' => 'color', 'value' => 'Earthen Tones'],
+                    ['key_name' => 'type', 'value' => 'Hand-molded'],
+                ],
             ],
             [
                 'name' => 'Hand-Painted Pahang Cultural Canvas Art',
@@ -197,6 +285,11 @@ class ProductSeeder extends Seeder
                 'price' => 180.00,
                 'stock_quantity' => 25,
                 'category_name' => 'Handicrafts & Souvenirs',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Canvas'],
+                    ['key_name' => 'dimensions', 'value' => '30x40cm'],
+                    ['key_name' => 'style', 'value' => 'Cultural Art'],
+                ],
             ],
             [
                 'name' => 'Pahang Wayang Kulit Keychain',
@@ -204,6 +297,11 @@ class ProductSeeder extends Seeder
                 'price' => 20.00,
                 'stock_quantity' => 200,
                 'category_name' => 'Handicrafts & Souvenirs',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Wood'],
+                    ['key_name' => 'type', 'value' => 'Keychain'],
+                    ['key_name' => 'color', 'value' => 'Vibrant'],
+                ],
             ],
             [
                 'name' => 'Pahang Bamboo Wind Chime',
@@ -211,6 +309,11 @@ class ProductSeeder extends Seeder
                 'price' => 40.00,
                 'stock_quantity' => 150,
                 'category_name' => 'Handicrafts & Souvenirs',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Bamboo'],
+                    ['key_name' => 'type', 'value' => 'Wind Chime'],
+                    ['key_name' => 'sound', 'value' => 'Soothing'], // Assuming 'sound' key exists
+                ],
             ],
 
             // Health & Beauty
@@ -220,6 +323,11 @@ class ProductSeeder extends Seeder
                 'price' => 50.00,
                 'stock_quantity' => 100,
                 'category_name' => 'Health & Beauty',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Pure Propolis'],
+                    ['key_name' => 'volume', 'value' => '30ml'],
+                    ['key_name' => 'origin', 'value' => 'Pahang Rainforest'],
+                ],
             ],
             [
                 'name' => 'Pahang Herbal Hair Oil',
@@ -227,6 +335,11 @@ class ProductSeeder extends Seeder
                 'price' => 35.00,
                 'stock_quantity' => 120,
                 'category_name' => 'Health & Beauty',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Herbal Hair Oil'],
+                    ['key_name' => 'volume', 'value' => '100ml'],
+                    ['key_name' => 'ingredients', 'value' => 'Betel Leaf, Turmeric, Moringa'], // Assuming 'ingredients' key exists
+                ],
             ],
             [
                 'name' => 'Pahang Belimbing Buluh Face Toner',
@@ -234,6 +347,11 @@ class ProductSeeder extends Seeder
                 'price' => 28.00,
                 'stock_quantity' => 150,
                 'category_name' => 'Health & Beauty',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Face Toner'],
+                    ['key_name' => 'volume', 'value' => '120ml'],
+                    ['key_name' => 'ingredients', 'value' => 'Belimbing Buluh'],
+                ],
             ],
             [
                 'name' => 'Pahang Rainforest Body Butter',
@@ -241,6 +359,11 @@ class ProductSeeder extends Seeder
                 'price' => 45.00,
                 'stock_quantity' => 100,
                 'category_name' => 'Health & Beauty',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Body Butter'],
+                    ['key_name' => 'weight', 'value' => '150 grams'],
+                    ['key_name' => 'ingredients', 'value' => 'Shea Butter, Cocoa Butter'],
+                ],
             ],
             [
                 'name' => 'Pahang Herbal Foot Soak Pack',
@@ -248,6 +371,11 @@ class ProductSeeder extends Seeder
                 'price' => 22.00,
                 'stock_quantity' => 200,
                 'category_name' => 'Health & Beauty',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Foot Soak'],
+                    ['key_name' => 'weight', 'value' => '100 grams'],
+                    ['key_name' => 'ingredients', 'value' => 'Ginger, Lemongrass, Eucalyptus'],
+                ],
             ],
 
             // Home & Living
@@ -257,6 +385,11 @@ class ProductSeeder extends Seeder
                 'price' => 90.00,
                 'stock_quantity' => 60,
                 'category_name' => 'Home & Living',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Rattan'],
+                    ['key_name' => 'style', 'value' => 'Wall Decor'],
+                    ['key_name' => 'dimensions', 'value' => '50x50cm'],
+                ],
             ],
             [
                 'name' => 'Tenun Pahang Cushion Cover',
@@ -264,6 +397,11 @@ class ProductSeeder extends Seeder
                 'price' => 80.00,
                 'stock_quantity' => 70,
                 'category_name' => 'Home & Living',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Tenun Fabric'],
+                    ['key_name' => 'size', 'value' => '45x45cm'],
+                    ['key_name' => 'color', 'value' => 'Assorted'],
+                ],
             ],
             [
                 'name' => 'Pahang Teak Wood Serving Tray',
@@ -271,6 +409,11 @@ class ProductSeeder extends Seeder
                 'price' => 130.00,
                 'stock_quantity' => 40,
                 'category_name' => 'Home & Living',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Teak Wood'],
+                    ['key_name' => 'dimensions', 'value' => '30x40cm'],
+                    ['key_name' => 'type', 'value' => 'Serving Tray'],
+                ],
             ],
             [
                 'name' => 'Pahang Bamboo Planters',
@@ -278,6 +421,11 @@ class ProductSeeder extends Seeder
                 'price' => 45.00,
                 'stock_quantity' => 100,
                 'category_name' => 'Home & Living',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Bamboo'],
+                    ['key_name' => 'type', 'value' => 'Planter'],
+                    ['key_name' => 'size', 'value' => 'Various'],
+                ],
             ],
             [
                 'name' => 'Pahang Ceramic Tableware Set',
@@ -285,6 +433,11 @@ class ProductSeeder extends Seeder
                 'price' => 160.00,
                 'stock_quantity' => 50,
                 'category_name' => 'Home & Living',
+                'attributes' => [
+                    ['key_name' => 'material', 'value' => 'Ceramic'],
+                    ['key_name' => 'color', 'value' => 'Earthy Tones'],
+                    ['key_name' => 'type', 'value' => 'Tableware Set'],
+                ],
             ],
 
             // Livestock & Animal Products
@@ -294,6 +447,11 @@ class ProductSeeder extends Seeder
                 'price' => 35.00,
                 'stock_quantity' => 100,
                 'category_name' => 'Livestock & Animal Products',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Goat Cheese'],
+                    ['key_name' => 'weight', 'value' => '200 grams'],
+                    ['key_name' => 'origin', 'value' => 'Pahang'],
+                ],
             ],
             [
                 'name' => 'Pahang Free-Range Duck Eggs',
@@ -301,6 +459,11 @@ class ProductSeeder extends Seeder
                 'price' => 3.50,
                 'stock_quantity' => 300,
                 'category_name' => 'Livestock & Animal Products',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Duck Eggs'],
+                    ['key_name' => 'packaging', 'value' => 'Tray of 6'],
+                    ['key_name' => 'origin', 'value' => 'Pahang'],
+                ],
             ],
             [
                 'name' => 'Pahang Buffalo Milk Yogurt',
@@ -308,6 +471,11 @@ class ProductSeeder extends Seeder
                 'price' => 10.00,
                 'stock_quantity' => 200,
                 'category_name' => 'Livestock & Animal Products',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Buffalo Milk Yogurt'],
+                    ['key_name' => 'volume', 'value' => '500ml'],
+                    ['key_name' => 'origin', 'value' => 'Pahang'],
+                ],
             ],
             [
                 'name' => 'Pahang Organic Chicken',
@@ -315,6 +483,11 @@ class ProductSeeder extends Seeder
                 'price' => 22.00,
                 'stock_quantity' => 200,
                 'category_name' => 'Livestock & Animal Products',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Organic Chicken'],
+                    ['key_name' => 'weight', 'value' => '1.5 kg'],
+                    ['key_name' => 'origin', 'value' => 'Pahang'],
+                ],
             ],
             [
                 'name' => 'Pahang Bee Pollen',
@@ -322,6 +495,11 @@ class ProductSeeder extends Seeder
                 'price' => 60.00,
                 'stock_quantity' => 80,
                 'category_name' => 'Livestock & Animal Products',
+                'attributes' => [
+                    ['key_name' => 'type', 'value' => 'Bee Pollen'],
+                    ['key_name' => 'weight', 'value' => '100 grams'],
+                    ['key_name' => 'origin', 'value' => 'Pahang Rainforest'],
+                ],
             ],
 
             // Books & Educational Materials
@@ -331,6 +509,11 @@ class ProductSeeder extends Seeder
                 'price' => 75.00,
                 'stock_quantity' => 100,
                 'category_name' => 'Books & Educational Materials',
+                'attributes' => [
+                    ['key_name' => 'pages', 'value' => '350'],
+                    ['key_name' => 'format', 'value' => 'Hardcover'],
+                    ['key_name' => 'target_audience', 'value' => 'General Public, Historians'],
+                ],
             ],
             [
                 'name' => 'Learn Tenun Pahang Diraja Weaving (Workbook + DVD)',
@@ -338,6 +521,11 @@ class ProductSeeder extends Seeder
                 'price' => 90.00,
                 'stock_quantity' => 50,
                 'category_name' => 'Books & Educational Materials',
+                'attributes' => [
+                    ['key_name' => 'format', 'value' => 'Workbook + DVD'],
+                    ['key_name' => 'pages', 'value' => '120'],
+                    ['key_name' => 'target_audience', 'value' => 'Beginners, Crafters'],
+                ],
             ],
             [
                 'name' => 'Pahang Flora & Fauna Coloring Book',
@@ -345,6 +533,11 @@ class ProductSeeder extends Seeder
                 'price' => 25.00,
                 'stock_quantity' => 150,
                 'category_name' => 'Books & Educational Materials',
+                'attributes' => [
+                    ['key_name' => 'pages', 'value' => '60'],
+                    ['key_name' => 'format', 'value' => 'Paperback'],
+                    ['key_name' => 'target_audience', 'value' => 'Children, Nature Lovers'],
+                ],
             ],
             [
                 'name' => 'Pahang Dialect Phrasebook',
@@ -352,6 +545,11 @@ class ProductSeeder extends Seeder
                 'price' => 18.00,
                 'stock_quantity' => 200,
                 'category_name' => 'Books & Educational Materials',
+                'attributes' => [
+                    ['key_name' => 'pages', 'value' => '80'],
+                    ['key_name' => 'format', 'value' => 'Pocketbook'],
+                    ['key_name' => 'target_audience', 'value' => 'Tourists, Language Learners'],
+                ],
             ],
             [
                 'name' => 'Pahang Folktales: Myths and Legends Retold',
@@ -359,6 +557,11 @@ class ProductSeeder extends Seeder
                 'price' => 45.00,
                 'stock_quantity' => 120,
                 'category_name' => 'Books & Educational Materials',
+                'attributes' => [
+                    ['key_name' => 'pages', 'value' => '200'],
+                    ['key_name' => 'format', 'value' => 'Paperback'],
+                    ['key_name' => 'target_audience', 'value' => 'All Ages'],
+                ],
             ],
 
             // Local Services (voucher-based)
@@ -368,6 +571,11 @@ class ProductSeeder extends Seeder
                 'price' => 150.00,
                 'stock_quantity' => 100,
                 'category_name' => 'Local Services (voucher-based)',
+                'attributes' => [
+                    ['key_name' => 'duration', 'value' => '1 Night'],
+                    ['key_name' => 'type', 'value' => 'Voucher'],
+                    ['key_name' => 'capacity', 'value' => '2 Adults'],
+                ],
             ],
             [
                 'name' => 'Pahang Guided Jungle Trekking Tour',
@@ -375,6 +583,11 @@ class ProductSeeder extends Seeder
                 'price' => 120.00,
                 'stock_quantity' => 80,
                 'category_name' => 'Local Services (voucher-based)',
+                'attributes' => [
+                    ['key_name' => 'duration', 'value' => 'Full Day'],
+                    ['key_name' => 'type', 'value' => 'Guided Tour'],
+                    ['key_name' => 'target_audience', 'value' => 'Adventure Seekers'],
+                ],
             ],
             [
                 'name' => 'Tenun Pahang Weaving Workshop Voucher',
@@ -382,6 +595,11 @@ class ProductSeeder extends Seeder
                 'price' => 180.00,
                 'stock_quantity' => 60,
                 'category_name' => 'Local Services (voucher-based)',
+                'attributes' => [
+                    ['key_name' => 'duration', 'value' => '4 Hours'],
+                    ['key_name' => 'type', 'value' => 'Workshop'],
+                    ['key_name' => 'target_audience', 'value' => 'Crafters, Culture Enthusiasts'],
+                ],
             ],
             [
                 'name' => 'Pahang Farm-to-Table Cooking Class',
@@ -389,6 +607,11 @@ class ProductSeeder extends Seeder
                 'price' => 130.00,
                 'stock_quantity' => 90,
                 'category_name' => 'Local Services (voucher-based)',
+                'attributes' => [
+                    ['key_name' => 'duration', 'value' => '3 Hours'],
+                    ['key_name' => 'type', 'value' => 'Cooking Class'],
+                    ['key_name' => 'target_audience', 'value' => 'Foodies'],
+                ],
             ],
             [
                 'name' => 'Pahang Heritage Walking Tour Voucher',
@@ -396,6 +619,11 @@ class ProductSeeder extends Seeder
                 'price' => 90.00,
                 'stock_quantity' => 100,
                 'category_name' => 'Local Services (voucher-based)',
+                'attributes' => [
+                    ['key_name' => 'duration', 'value' => '2 Hours'],
+                    ['key_name' => 'type', 'value' => 'Walking Tour'],
+                    ['key_name' => 'target_audience', 'value' => 'History Buffs'],
+                ],
             ],
         ];
 
@@ -414,11 +642,27 @@ class ProductSeeder extends Seeder
                 'description' => $product['description'],
                 'price' => $product['price'],
                 'stock_quantity' => $product['stock_quantity'],
-                'delivery_fee' => $faker->randomFloat(2, 5, 10), // Random delivery fee
+                'delivery_fee' => 5.00, // Fixed delivery fee
                 'is_published' => true,
                 'product_category_id' => $categoryId,
                 'images' => $imagesToUse,
             ];
+
+            // Handle product attributes from the custom product definition
+            $attributesForHelper = [];
+            if (!empty($product['attributes'])) {
+                foreach ($product['attributes'] as $attrDef) {
+                    if (isset($attributeKeyNameToIdMap[$attrDef['key_name']])) {
+                        $attributesForHelper[] = [
+                            'attribute_key_id' => $attributeKeyNameToIdMap[$attrDef['key_name']],
+                            'value' => (string) $attrDef['value'],
+                        ];
+                    } else {
+                        $this->command->warn("Warning: Attribute key '{$attrDef['key_name']}' not found for product '{$product['name']}'. Skipping this attribute.");
+                    }
+                }
+            }
+            $productData['attributes'] = $attributesForHelper;
 
             self::createProductFromArray($productData);
         }

@@ -94,10 +94,125 @@ class ProductAttributeKeySeeder extends Seeder
                 'is_filterable' => false,
                 'sort_order' => 10,
             ],
+            [
+                'name' => 'material',
+                'display_name' => 'Material',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => true,
+                'sort_order' => 11,
+            ],
+            [
+                'name' => 'size',
+                'display_name' => 'Size',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => true,
+                'sort_order' => 12,
+            ],
+            [
+                'name' => 'packaging',
+                'display_name' => 'Packaging',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => false,
+                'sort_order' => 13,
+            ],
+            [
+                'name' => 'volume',
+                'display_name' => 'Volume',
+                'data_type' => 'decimal',
+                'unit' => 'ml',
+                'is_filterable' => true,
+                'sort_order' => 14,
+            ],
+            [
+                'name' => 'pages',
+                'display_name' => 'Pages',
+                'data_type' => 'integer',
+                'unit' => null,
+                'is_filterable' => false,
+                'sort_order' => 15,
+            ],
+            [
+                'name' => 'format',
+                'display_name' => 'Format',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => true,
+                'sort_order' => 16,
+            ],
+            [
+                'name' => 'duration',
+                'display_name' => 'Duration',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => false,
+                'sort_order' => 17,
+            ],
+            [
+                'name' => 'capacity',
+                'display_name' => 'Capacity',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => true,
+                'sort_order' => 18,
+            ],
+            [
+                'name' => 'type',
+                'display_name' => 'Type',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => true,
+                'sort_order' => 19,
+            ],
+            [
+                'name' => 'flavor',
+                'display_name' => 'Flavor',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => true,
+                'sort_order' => 20,
+            ],
+            [
+                'name' => 'origin',
+                'display_name' => 'Origin',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => true,
+                'sort_order' => 21,
+            ],
+            [
+                'name' => 'style',
+                'display_name' => 'Style',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => true,
+                'sort_order' => 22,
+            ],
+            [
+                'name' => 'occasion',
+                'display_name' => 'Occasion',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => false,
+                'sort_order' => 23,
+            ],
+            [
+                'name' => 'target_audience',
+                'display_name' => 'Target Audience',
+                'data_type' => 'string',
+                'unit' => null,
+                'is_filterable' => false,
+                'sort_order' => 24,
+            ],
         ];
 
         foreach ($attributeKeys as $attributeKey) {
-            ProductAttributeKey::create($attributeKey);
+            ProductAttributeKey::firstOrCreate(
+                ['name' => $attributeKey['name']],
+                $attributeKey
+            );
         }
     }
 }
