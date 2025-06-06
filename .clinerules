@@ -22,3 +22,8 @@ When making a form, please consider using the blade components in the form folde
 - **Primary Keys:** Use `id` (auto-incrementing integer).
 - **Table Names:** Use plural snake_case (e.g., `product_attributes`).
 - **Model Names:** Use Singular PascalCase (e.g., `ProductAttribute`).
+
+## Icon Component Usage
+
+- **Usage:** To embed an icon, use the Blade component syntax: `<x-icon.[icon-name] />`. You can apply CSS classes for styling, for example: `<x-icon.cart class="w-6 h-6" />`.
+- **Requesting New Icons:** If an icon is not available in the `resources/views/components/icon/` directory, please request the specific icon (e.g., "paper-plane" from Font Awesome). The icon will then be manually added to the `resources/views/components/icon/` directory (e.g., `paper-plane.blade.php`).

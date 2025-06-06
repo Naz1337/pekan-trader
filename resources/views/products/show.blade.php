@@ -37,9 +37,19 @@
                       action="{{ route('catalogue.add_to_cart', compact('product')) }}"
                       method="post">
 
-                    <div class="mb-4 flex items-center gap-2">
+                    <div class="mb-2 flex items-center gap-2">
                         <x-icon.store class="w-4 h-4 shrink-0 text-base-content/80"/>
                         <strong>Seller:</strong> <a href="{{ route('seller.profile.show', $product->seller) }}" class="link link-hover">{{ $product->seller->business_name }}</a>
+                    </div>
+                    <div class="flex gap-2 mb-4">
+                        <a class="btn btn-sm btn-soft" href="#">
+                            <x-icon.paper-plane class="size-[1.2em]"/>
+                            Chat
+                        </a>
+                        <a class="btn btn-sm btn-soft" href="#">
+                            <x-icon.user-plus class="size-[1.2em]"/>
+                            Follow
+                        </a>
                     </div>
                     <div class="mb-8">
                         @if($product->stock_quantity <= 0)
