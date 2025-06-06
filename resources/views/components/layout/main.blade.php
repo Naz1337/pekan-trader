@@ -9,7 +9,7 @@
         <div class="container flex">
             <div class="flex-1">
                 <a class="btn btn-ghost text-accent-content btn-lg" href="{{ route('home') }}">
-                    <img class="h-full" src="/imgs/logo.png" alt="Pekan Traders Logo">
+                    <img class="h-full" src="/imgs/logo-baru.png" alt="Pekan Traders Logo">
                 </a>
             </div>
             <div class="flex-none flex gap-4 flex-row-reverse items-center">
