@@ -30,7 +30,12 @@ class CatalogueController extends Controller
             $productsQuery->where('name', 'LIKE', '%' . $query . '%');
         }
 
-        $products = $productsQuery->latest()->paginate(12); // Get paginated results, ordered by latest
+        // Conditionally apply ordering: random for homepage, latest for search/category results
+        if ($query || $categoryName) {
+            $products = $productsQuery->latest()->paginate(12); // Order by latest for search/category
+        } else {
+            $products = $productsQuery->inRandomOrder()->paginate(12); // Random order for homepage
+        }
 
         // Pass all relevant data to the view
         // The view should be consistent, e.g., 'catalogue.search-result' for any filtering
