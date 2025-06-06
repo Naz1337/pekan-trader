@@ -19,6 +19,14 @@
         {{ $slot }}
     </div>
 
+    @auth
+        <div class="fixed bottom-4 right-4">
+            <button class="btn btn-secondary cursor-pointer">
+                Chat
+            </button>
+        </div>
+    @endauth
+
     @session('toast')
         <div class="toast" x-data="{show: true}" x-show="show" x-transition>
         <div class="alert alert-{{ $value['type'] }} relative">
@@ -29,12 +37,6 @@
     </div>
     @endsession
 
-    @auth
-        <div class="fixed bottom-4 right-4">
-            <button class="btn btn-secondary cursor-pointer">
-                Chat
-            </button>
-        </div>
-    @endauth
+
 </body>
 </html>
