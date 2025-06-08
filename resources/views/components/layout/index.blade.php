@@ -1,4 +1,4 @@
-@props(['title' => "Pekan Trader"])
+@props(['title' => "Pahang IKS Trader"])
 
 <!doctype html>
 <html lang="en">

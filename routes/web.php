@@ -87,6 +87,15 @@ Route::middleware('auth.seller')->group(function () {
     });
 });
 
+// Admin routes
+Route::prefix('admin')->group(function () {
+    Route::controller(App\Http\Controllers\Admin\SellerApprovalController::class)->group(function () {
+        Route::get('/sellers', 'index')->name('admin.sellers.index');
+        Route::get('/sellers/pending', 'pending')->name('admin.sellers.pending');
+        Route::get('/sellers/{id}', 'show')->name('admin.sellers.show');
+    });
+});
+
 Route::controller(CatalogueController::class)->group(function () {
     Route::get('/', 'home')->name('home');
 

@@ -34,7 +34,7 @@ class CatalogueController extends Controller
         if ($query || $categoryName) {
             $products = $productsQuery->latest()->paginate(12); // Order by latest for search/category
         } else {
-            $products = $productsQuery->inRandomOrder()->paginate(12); // Random order for homepage
+            $products = $productsQuery->inRandomOrder()->paginate(15); // Random order for homepage
         }
 
         // Pass all relevant data to the view
