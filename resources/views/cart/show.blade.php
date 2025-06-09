@@ -12,7 +12,7 @@
             <div class="flex flex-col gap-6">
                 @foreach ($products as $product)
                     <div class="flex items-center gap-4 p-4 bg-base-300 rounded-box">
-                        <img class="w-24 h-24 object-contain" src="{{ Storage::url($product->image_path) }}" alt="{{ $product->name }}">
+                        <img class="w-24 h-24 object-contain" src="{{ $product->main_image_url }}" alt="{{ $product->name }}">
                         <div class="flex-1">
                             <div class="text-lg font-semibold">{{ $product->name }}</div>
                             <div class="text-primary">RM {{ number_format($product->price, 2) }}</div>
