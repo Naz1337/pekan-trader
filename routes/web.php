@@ -98,10 +98,7 @@ Route::prefix('admin')
             Route::post('/sellers/{id}/approve', 'approve')->name('admin.sellers.approve');
         });
 
-        Route::get('/dashboard', function () {
-            $pendingCount = \App\Models\Seller::where('approved', false)->count();
-            return view('admin.dashboard', compact('pendingCount'));
-        })->name('admin.dashboard');
+        Route::get('/dashboard', [App\Http\Controllers\Admin\DashboardController::class, 'index'])->name('admin.dashboard');
     });
 
 Route::controller(CatalogueController::class)->group(function () {

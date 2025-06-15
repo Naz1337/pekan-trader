@@ -1,4 +1,4 @@
-<x-layout.index>
+<x-layout.admin>
     <div class="container mx-auto p-4">
         <h1 class="text-2xl font-bold mb-4">Pending Seller Approvals</h1>
 
@@ -29,4 +29,4 @@
             </table>
         </div>
     </div>
-</x-layout.index>
+</x-layout.admin>
