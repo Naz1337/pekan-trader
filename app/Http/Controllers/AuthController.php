@@ -25,7 +25,15 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        // Attempt to log the user in
+        // Check for admin credentials first
+        if ($validated['email'] === config('admin.username') &&
+            $validated['password'] === config('admin.password')) {
+            session(['admin_logged_in' => true]);
+            return response()->json(['redirect' => route('admin.sellers.index')])
+                ->header('HX-Redirect', route('admin.sellers.index'));
+        }
+
+        // If not admin, attempt regular user login
         if (auth()->attempt($validated)) {
             $products = Product::all();
             // Redirect to the intended page
@@ -71,9 +79,13 @@ class AuthController extends Controller
 
     public function logout()
     {
-        auth()->logout();
-        session()->invalidate();
+        if (session('admin_logged_in')) {
+            session()->forget('admin_logged_in');
+        } else {
+            auth()->logout();
+        }
 
+        session()->invalidate();
         return redirect()->route('home');
     }
 
@@ -142,7 +154,7 @@ class AuthController extends Controller
         $seller_data['logo_url'] = $logo_path;
         $seller_data['business_cert_url'] = $cert_path;
 
-        // Create the seller
+        // Create the seller with approved set to false by default
         $new_user->seller()->create([
             "business_name" => $seller_data['business_name'],
             "business_description" => $seller_data['business_description'],
@@ -158,12 +170,13 @@ class AuthController extends Controller
             "business_cert_url" => $cert_path,
             "bank_name" => $seller_data['bank_name'],
             "bank_account_name" => $seller_data['bank_account_name'],
-            "bank_account_number" => $seller_data['bank_account_number']
+            "bank_account_number" => $seller_data['bank_account_number'],
+            "approved" => false
         ]);
 
         return redirect()->route('login')->with(
             'success',
-            'Your Seller account has been successfully registered. You can now log in.'
+            'Your Seller account has been registered and is pending approval. You will be notified once approved.'
         );
     }
 }

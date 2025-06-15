@@ -46,6 +46,7 @@ class SellerSeeder extends Seeder
                 'bank_name' => $faker->randomElement(['Maybank', 'CIMB', 'Public Bank']),
                 'bank_account_name' => $faker->name,
                 'bank_account_number' => $faker->bankAccountNumber,
+                'approved' => true, // Set approved to true for seeded sellers
             ]);
         }
 
@@ -77,6 +78,7 @@ class SellerSeeder extends Seeder
                 'bank_name' => 'Maybank',
                 'bank_account_name' => 'Syarikat Maju Jaya Sdn Bhd',
                 'bank_account_number' => '123456789012',
+                'approved' => true, // Set approved to true for this specific seller
             ]
         );
     }

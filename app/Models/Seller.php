@@ -26,7 +26,9 @@ class Seller extends Model
         "business_cert_url",
         "bank_name",
         "bank_account_name",
-        "bank_account_number"
+        "bank_account_number",
+        "approved",
+        "approved_at"
     ];
 
     protected $hidden = [
@@ -37,6 +39,8 @@ class Seller extends Model
     protected $casts = [
         'email_verified_at' => 'datetime',
         'password' => 'hashed',
+        'approved' => 'boolean',
+        'approved_at' => 'datetime',
     ];
 
     public function user(): BelongsTo

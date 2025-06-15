@@ -6,7 +6,7 @@ use Closure;
 use Illuminate\Http\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-class AuthSellerCheck
+class AdminMiddleware
 {
     /**
      * Handle an incoming request.
@@ -15,13 +15,8 @@ class AuthSellerCheck
      */
     public function handle(Request $request, Closure $next): Response
     {
-        if (!auth()->check() || !auth()->user()->seller()->exists()) {
-            return redirect()->route('home');
-        }
-
-        $seller = auth()->user()->seller;
-        if (!$seller->approved) {
-            return redirect()->route('seller.pending');
+        if (!session('admin_logged_in')) {
+            return redirect()->route('login')->with('error', 'Admin access required.');
         }
 
         return $next($request);

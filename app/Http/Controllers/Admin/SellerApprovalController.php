@@ -14,33 +14,20 @@ class SellerApprovalController extends Controller
      */
     public function index()
     {
-        // Hardcoded data for demonstration
-        $sellers = [
-            [
-                'id' => 1,
-                'business_name' => 'Siti\'s Delightful Bakes',
-                'user_name' => 'Siti Aisyah',
-                'email' => 'siti.aisyah@example.com',
-                'status' => 'Pending',
-                'created_at' => '2024-01-15 10:00:00',
-            ],
-            [
-                'id' => 2,
-                'business_name' => 'Kedai Buku ABC',
-                'user_name' => 'Ahmad Bin Ali',
-                'email' => 'ahmad.ali@example.com',
-                'status' => 'Approved',
-                'created_at' => '2023-11-01 09:30:00',
-            ],
-            [
-                'id' => 3,
-                'business_name' => 'Warung Makan Sedap',
-                'user_name' => 'Fatimah Binti Abdullah',
-                'email' => 'fatimah.abdullah@example.com',
-                'status' => 'Approved',
-                'created_at' => '2024-02-20 14:00:00',
-            ],
-        ];
+        $sellers = Seller::with('user')
+            ->select('sellers.*')
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($seller) {
+                return [
+                    'id' => $seller->id,
+                    'business_name' => $seller->business_name,
+                    'user_name' => $seller->user->name,
+                    'email' => $seller->user->email,
+                    'status' => $seller->approved ? 'Approved' : 'Pending',
+                    'created_at' => $seller->created_at,
+                ];
+            });
 
         return view('admin.sellers.index', compact('sellers'));
     }
@@ -50,16 +37,19 @@ class SellerApprovalController extends Controller
      */
     public function pending()
     {
-        // Hardcoded data for demonstration
-        $pendingSellers = [
-            [
-                'id' => 1,
-                'business_name' => 'Siti\'s Delightful Bakes',
-                'user_name' => 'Siti Aisyah',
-                'email' => 'siti.aisyah@example.com',
-                'created_at' => '2024-01-15 10:00:00',
-            ],
-        ];
+        $pendingSellers = Seller::with('user')
+            ->where('approved', false)
+            ->orderBy('created_at', 'desc')
+            ->get()
+            ->map(function ($seller) {
+                return [
+                    'id' => $seller->id,
+                    'business_name' => $seller->business_name,
+                    'user_name' => $seller->user->name,
+                    'email' => $seller->user->email,
+                    'created_at' => $seller->created_at,
+                ];
+            });
 
         return view('admin.sellers.pending', compact('pendingSellers'));
     }
@@ -69,29 +59,47 @@ class SellerApprovalController extends Controller
      */
     public function show($id)
     {
-        // Hardcoded data for demonstration based on the persona
-        $seller = [
-            'id' => $id,
-            'business_name' => 'Siti\'s Delightful Bakes',
-            'business_description' => 'Homemade cakes, cookies, and pastries made with premium ingredients. Perfect for celebrations or a daily treat.',
-            'business_address' => 'No. 42, Lorong Cempaka, 26600 Pekan, Pahang',
-            'business_phone' => '019-8765432',
-            'business_email' => 'orders@sitisdelightfulbakes.com',
-            'logo_url' => '/imgs/logo.png', // Placeholder image
-            'opening_hour' => '09:00 AM',
-            'closing_hour' => '07:00 PM',
-            'facebook' => 'https://facebook.com/sitisdelightfulbakes',
-            'instagram' => 'https://instagram.com/sitisdelightfulbakes',
-            'ic_number' => '900120-06-5432',
-            'business_cert_url' => 'https://www.africau.edu/images/default/sample.pdf', // Placeholder PDF
-            'bank_name' => 'CIMB Bank',
-            'bank_account_name' => 'Siti\'s Delightful Bakes Enterprise',
-            'bank_account_number' => '987654321098',
-            'user_name' => 'Siti Aisyah',
-            'user_email' => 'siti.aisyah@example.com',
-            'status' => 'Pending', // For demonstration
+        $seller = Seller::with('user')->findOrFail($id);
+
+        $sellerData = [
+            'id' => $seller->id,
+            'business_name' => $seller->business_name,
+            'business_description' => $seller->business_description,
+            'business_address' => $seller->business_address,
+            'business_phone' => $seller->business_phone,
+            'business_email' => $seller->business_email,
+            'logo_url' => $seller->profile_image_url,
+            'opening_hour' => $seller->opening_hour,
+            'closing_hour' => $seller->closing_hour,
+            'facebook' => $seller->facebook,
+            'instagram' => $seller->instagram,
+            'ic_number' => $seller->ic_number,
+            'business_cert_url' => $seller->business_cert_url ? asset('storage/' . $seller->business_cert_url) : null,
+            'bank_name' => $seller->bank_name,
+            'bank_account_name' => $seller->bank_account_name,
+            'bank_account_number' => $seller->bank_account_number,
+            'user_name' => $seller->user->name,
+            'user_email' => $seller->user->email,
+            'status' => $seller->approved ? 'Approved' : 'Pending',
         ];
 
-        return view('admin.sellers.show', compact('seller'));
+        return view('admin.sellers.show', ['seller' => $sellerData]);
+    }
+
+    /**
+     * Approve a seller.
+     */
+    public function approve($id)
+    {
+        $seller = Seller::findOrFail($id);
+
+        if (!$seller->approved) {
+            $seller->update([
+                'approved' => true,
+                'approved_at' => now()
+            ]);
+        }
+
+        return back()->with('success', 'Seller has been approved successfully.');
     }
 }
