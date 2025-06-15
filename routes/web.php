@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\FollowController;
 use App\Http\Controllers\OrderPaymentController;
 use App\Http\Controllers\ProductController;
 use Illuminate\Support\Facades\Route;
@@ -141,5 +142,11 @@ Route::middleware('auth')->group(function () {
             Route::post('/send', 'sendMessage')->name('chat.send');
             Route::get('/sellers', 'getSellers')->name('chat.sellers');
         });
+    });
+
+    // Follow routes
+    Route::controller(FollowController::class)->group(function () {
+        Route::post('/sellers/{seller}/follow', 'store')->name('seller.follow');
+        Route::delete('/sellers/{seller}/follow', 'destroy')->name('seller.unfollow');
     });
 });

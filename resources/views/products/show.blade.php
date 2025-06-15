@@ -33,10 +33,7 @@
                     </template>
                 </div>
 
-                <form class="p-6 bg-base-200 rounded-box mt-4"
-                      action="{{ route('catalogue.add_to_cart', compact('product')) }}"
-                      method="post">
-
+                <div class="p-6 bg-base-200 rounded-box mt-4">
                     <div class="mb-2 flex items-center gap-2">
                         <x-icon.store class="w-4 h-4 shrink-0 text-base-content/80"/>
                         <strong>Seller:</strong> <a href="{{ route('seller.profile.show', $product->seller) }}" class="link link-hover">{{ $product->seller->business_name }}</a>
@@ -63,11 +60,92 @@
                                 Chat
                             </a>
                         @endauth
-                        <a class="btn btn-sm btn-soft" href="#">
-                            <x-icon.user-plus class="size-[1.2em]"/>
-                            Follow
-                        </a>
+
+                        {{-- Follow functionality with Alpine.js --}}
+                        @auth
+                            <div x-data="{
+                                isFollowing: @json(auth()->user()->isFollowing($product->seller)),
+                                isLoading: false,
+                                error: null,
+
+                                async toggleFollow() {
+                                    this.isLoading = true;
+                                    this.error = null;
+
+                                    try {
+                                        let response;
+                                        if (this.isFollowing) {
+                                            response = await fetch('{{ route('seller.unfollow', $product->seller) }}', {
+                                                method: 'DELETE',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                    'Accept': 'application/json',
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            });
+                                        } else {
+                                            response = await fetch('{{ route('seller.follow', $product->seller) }}', {
+                                                method: 'POST',
+                                                headers: {
+                                                    'X-CSRF-TOKEN': '{{ csrf_token() }}',
+                                                    'Accept': 'application/json',
+                                                    'Content-Type': 'application/json'
+                                                }
+                                            });
+                                        }
+
+                                        const data = await response.json();
+
+                                        if (response.ok) {
+                                            this.isFollowing = !this.isFollowing;
+                                        } else {
+                                            this.error = data.error || data.message || 'An error occurred';
+                                        }
+                                    } catch (err) {
+                                        this.error = 'Network error occurred';
+                                        console.error('Follow error:', err);
+                                    } finally {
+                                        this.isLoading = false;
+                                    }
+                                }
+                            }">
+                                <button
+                                    @click="toggleFollow"
+                                    :disabled="isLoading"
+                                    class="btn btn-sm btn-soft"
+                                    :class="{
+                                        'opacity-50': isLoading
+                                    }"
+                                >
+                                    <template x-if="isLoading">
+                                        <span class="loading loading-spinner loading-xs"></span>
+                                    </template>
+
+                                    <template x-if="!isLoading && isFollowing">
+                                        <x-icon.user-minus class="size-[1.2em]"/>
+                                    </template>
+
+                                    <template x-if="!isLoading && !isFollowing">
+                                        <x-icon.user-plus class="size-[1.2em]"/>
+                                    </template>
+
+                                    <span x-text="isLoading ? 'Loading...' : (isFollowing ? 'Unfollow' : 'Follow')"></span>
+                                </button>
+
+                                <div x-show="error" x-transition class="text-error text-sm mt-1" x-text="error"></div>
+                            </div>
+                        @else
+                            <a class="btn btn-sm btn-soft" href="{{ route('login') }}">
+                                <x-icon.user-plus class="size-[1.2em]"/>
+                                Follow
+                            </a>
+                        @endauth
                     </div>
+                </div>
+
+                <form class="p-6 bg-base-200 rounded-box mt-4"
+                      action="{{ route('catalogue.add_to_cart', compact('product')) }}"
+                      method="post">
                     <div class="mb-8">
                         @if($product->stock_quantity <= 0)
                             <span class="badge badge-error badge-lg font-medium">Out of Stock</span>
