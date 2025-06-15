@@ -1,6 +1,6 @@
 @use(Illuminate\Support\Facades\Storage)
 <x-layout.main>
-    <div class="max-w-280 ms-auto me-auto mt-20 rounded-box flex flex-col items-center p-4">
+    <div x-data="{}" class="max-w-280 ms-auto me-auto mt-20 rounded-box flex flex-col items-center p-4">
 
         <div class="flex items-start w-full">
             <div class="flex flex-col gap-16 min-w-[425px]">
@@ -42,10 +42,27 @@
                         <strong>Seller:</strong> <a href="{{ route('seller.profile.show', $product->seller) }}" class="link link-hover">{{ $product->seller->business_name }}</a>
                     </div>
                     <div class="flex gap-2 mb-4">
-                        <a class="btn btn-sm btn-soft" href="#">
-                            <x-icon.paper-plane class="size-[1.2em]"/>
-                            Chat
-                        </a>
+                        @auth
+                            <button x-data type="button" class="btn btn-sm btn-soft"
+                                    @click.stop="
+                                        console.log('Chat button clicked for seller ID:', {{ $product->seller->id }});
+                                        if (window.ChatController?.component) {
+                                            console.log('ChatController found, opening chat');
+                                            window.ChatController.component.openChatWithSeller({{ $product->seller->id }});
+                                        } else {
+                                            console.log('ChatController not found, dispatching event');
+                                            window.dispatchEvent(new CustomEvent('open-chat-with-seller', { detail: { sellerId: {{ $product->seller->id }} } }));
+                                        }
+                                    ">
+                                <x-icon.paper-plane class="size-[1.2em]"/>
+                                Chat
+                            </button>
+                        @else
+                            <a class="btn btn-sm btn-soft" href="{{ route('login') }}">
+                                <x-icon.paper-plane class="size-[1.2em]"/>
+                                Chat
+                            </a>
+                        @endauth
                         <a class="btn btn-sm btn-soft" href="#">
                             <x-icon.user-plus class="size-[1.2em]"/>
                             Follow

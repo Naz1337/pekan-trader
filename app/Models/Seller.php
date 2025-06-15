@@ -67,4 +67,9 @@ class Seller extends Model
     {
         return $this->logo_url ? Storage::url($this->logo_url) : '/imgs/user-icon.png';
     }
+
+    public function conversations(): HasMany
+    {
+        return $this->hasMany(Conversation::class);
+    }
 }

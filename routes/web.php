@@ -131,4 +131,15 @@ Route::middleware('auth')->group(function () {
             Route::patch('/{order}/set_received', 'setReceived')->name('orders.setReceived');
         });
     });
+
+    // Chat routes
+    Route::controller(App\Http\Controllers\ChatController::class)->group(function () {
+        Route::prefix('chat')->group(function () {
+            Route::get('/conversations', 'getConversations')->name('chat.conversations');
+            Route::post('/start', 'startOrGetConversation')->name('chat.start');
+            Route::get('/messages/{conversation}', 'getMessages')->name('chat.messages');
+            Route::post('/send', 'sendMessage')->name('chat.send');
+            Route::get('/sellers', 'getSellers')->name('chat.sellers');
+        });
+    });
 });

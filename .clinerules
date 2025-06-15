@@ -27,3 +27,17 @@ When making a form, please consider using the blade components in the form folde
 
 - **Usage:** To embed an icon, use the Blade component syntax: `<x-icon.[icon-name] />`. You can apply CSS classes for styling, for example: `<x-icon.cart class="w-6 h-6" />`.
 - **Requesting New Icons:** If an icon is not available in the `resources/views/components/icon/` directory, please request the specific icon (e.g., "paper-plane" from Font Awesome). The icon will then be manually added to the `resources/views/components/icon/` directory (e.g., `paper-plane.blade.php`).
+
+### Alpine.js Initialization Requirement
+- Any page using Alpine.js components MUST include an `x-data` attribute on a parent element
+- Without this, Alpine.js functionality (click handlers, state management) will not work
+- Example: `<div x-data>...</div>` or `<div x-data="{}">...</div>`
+
+### Manual Command Execution
+- Database Migrations: Run `php artisan migrate` manually after schema changes
+- Development Server: Start with `php artisan serve` for backend
+- Frontend Assets: Build with `npm run build` for production or `npm run dev` for development
+- Always run these commands after making changes that affect:
+  - Database schema (migrations)
+  - JavaScript/CSS assets
+  - Configuration files

@@ -20,11 +20,13 @@
     </div>
 
     @auth
-        <div class="fixed bottom-4 right-4">
-            <button class="btn btn-secondary cursor-pointer">
+        <div x-data class="fixed bottom-4 right-4">
+            <button @click="window.ChatController.openChat()" class="btn btn-secondary cursor-pointer">
                 Chat
             </button>
         </div>
+
+        <x-chat-panel />
     @endauth
 
     @session('toast')
