@@ -35,14 +35,22 @@ class Message extends Model
 
     public function getSenderNameAttribute(): string
     {
-        $sender = $this->sender();
+        try {
+            $sender = $this->sender();
 
-        if ($this->sender_type === 'user') {
-            return $sender ? $sender->name : 'Unknown User';
-        } elseif ($this->sender_type === 'seller') {
-            return $sender ? $sender->shop_name : 'Unknown Seller';
+            if ($this->sender_type === 'user') {
+                return $sender->name ?? 'Unknown User';
+            }
+
+            if ($this->sender_type === 'seller') {
+                return $sender->business_name ?? 'Unknown Seller';
+            }
+
+            return 'Unknown Sender';
+        } catch (\Exception $e) {
+            // Log detailed error for debugging
+            \Log::error("Sender name error for message {$this->id}: " . $e->getMessage());
+            return 'Error: Sender Unknown';
         }
-
-        return 'Unknown';
     }
 }
